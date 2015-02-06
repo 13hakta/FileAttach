@@ -1,0 +1,14 @@
+Changelog for FileAttach.
+
+1.0.0
+==============
+- Initial release
+
+1.0.1
+==============
+- Add ability to hash file if it didn't at upload
+- Add showSize option to snippet
+- Rewritten download processor
+- Updated FileItem model
+- Add filter for templates in document lister
+- UI editor rearrange
