@@ -143,6 +143,7 @@ FileAttach.grid.Items = function (config) {
 		url: FileAttach.config.connector_url,
 		fields: this.getFields(config),
 		columns: this.getColumns(config),
+		ddText: _('fileattach.ddtext'),
 		tbar: this.getTopBar(config),
 		sm: this.sm,
 		baseParams: {
@@ -151,8 +152,8 @@ FileAttach.grid.Items = function (config) {
 		},
 		listeners: {
 			rowDblClick: function (grid, rowIndex, e) {
-				var row = grid.store.getAt(rowIndex);
-				this.updateItem(grid, e, row);
+			    var row = grid.store.getAt(rowIndex);
+			    this.updateItem(grid, e, row);
 			}
 		},
 		viewConfig: {
@@ -166,6 +167,20 @@ FileAttach.grid.Items = function (config) {
 		remoteSort: true,
 		autoHeight: true,
 	});
+
+	// Enable D&D only in resource editor
+	if (FileAttach.config.docid)
+	    Ext.applyIf(config, {
+    		plugins: [new Ext.ux.dd.GridDragDropRowOrder({
+        	    copy: false,
+        	    scrollable: true,
+        	    targetCfg: {},
+        	    listeners: {
+            		'afterrowmove': {fn:this.onAfterRowMove, scope:this}
+        	    }
+    		})]
+	});
+
 	FileAttach.grid.Items.superclass.constructor.call(this, config);
 
 	// Clear selection on grid refresh
@@ -326,11 +341,16 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
     },
 
 	getFields: function (config) {
-		return ['id', 'name', 'description', 'docid', 'download', 'private', 'pagetitle', 'username'];
+		return ['id', 'name', 'description', 'docid', 'download', 'private', 'pagetitle', 'username', 'rank'];
 	},
 
 	getColumns: function (config) {
 	    var columns = [this.sm, {
+			header: _('fileattach.rank'),
+			dataIndex: 'rank',
+			hidden: true,
+			width: 50
+		}, {
 			header: _('id'),
 			dataIndex: 'id',
 			sortable: true,
@@ -497,6 +517,38 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		Ext.getCmp(this.config.id + '-search-field').setValue('');
 		this.getBottomToolbar().changePage(1);
 		this.refresh();
-	}
+	},
+
+	onAfterRowMove: function(dt,sri,ri,sels) {
+    	    var s = this.getStore();
+    	    var sourceRec = s.getAt(sri);
+    	    var belowRec = s.getAt(ri);
+    	    var total = s.getTotalCount();
+	    var upd = {};
+
+    	    sourceRec.set('rank', sri);
+	    sourceRec.commit();
+	    upd[sourceRec.get('id')] = sri;
+
+        var brec;
+        for (var x = (ri - 1); x < total; x++) {
+            brec = s.getAt(x);
+            if (brec) {
+                brec.set('rank', x);
+                brec.commit();
+		upd[brec.get('id')] = x;
+            }
+        }
+	
+	MODx.Ajax.request({
+		url: this.config.url,
+		params: {
+		    action: 'mgr/rank',
+		    rank: Ext.util.JSON.encode(upd),
+		}
+	});
+
+        return true;
+    }
 });
 Ext.reg('fileattach-grid-items', FileAttach.grid.Items);

@@ -59,6 +59,14 @@ $tmp = array(
 	'lexicon' => 'fileattach:setting',
 	'value' => false
     ),
+    'download' => array(
+    	'key' => 'fileattach.download',
+	'name' => 'setting_fileattach.download',
+	'description' => 'setting_fileattach.download_desc',
+	'xtype' => 'combo-boolean',
+	'lexicon' => 'fileattach:setting',
+	'value' => true
+    ),
 );
 
 foreach ($tmp as $k => $v) {

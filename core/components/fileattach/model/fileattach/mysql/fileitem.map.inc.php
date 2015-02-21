@@ -15,6 +15,7 @@ $xpdo_meta_map['FileItem']= array (
     'download' => 0,
     'docid' => 0,
     'uid' => 0,
+    'rank' => 0,
   ),
   'fieldMeta' => 
   array (
@@ -92,6 +93,14 @@ $xpdo_meta_map['FileItem']= array (
       'null' => false,
       'default' => 0,
       'index' => 'index',
+    ),
+    'rank' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'null' => false,
+      'default' => 0,
     ),
   ),
   'indexes' => 

@@ -14,6 +14,7 @@
 
     		<field key="docid" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="index" />
     		<field key="uid" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="index" />
+    		<field key="rank" dbtype="int" precision="10" phptype="integer" null="false" default="0" />
 
 		<index alias="name" name="name" primary="false" unique="false" type="BTREE">
 		    <column key="name" length="" collation="A" null="false"/>

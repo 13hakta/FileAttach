@@ -12,3 +12,9 @@ Changelog for FileAttach.
 - Updated FileItem model
 - Add filter for templates in document lister
 - UI editor rearrange
+
+1.0.2
+==============
+- Add download option
+- Add rank field in model
+- Add ability to manually rearrange order

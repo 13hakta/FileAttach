@@ -41,7 +41,6 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
      * Return an array of containers at this current level in the container structure. Used for the tree
      * navigation on the files tree.
      *
-     * @abstract
      * @param string $path
      * @return array
      */

@@ -20,3 +20,6 @@ $_lang['setting_fileattach.calchash_desc'] = 'Calculate SHA1 file hash on upload
 
 $_lang['setting_fileattach.private'] = 'Private mode';
 $_lang['setting_fileattach.private_desc'] = 'Save files with random name by default to lock ability to download file by name. Download statistics collected only for private files';
+
+$_lang['setting_fileattach.download'] = 'Count downloads';
+$_lang['setting_fileattach.download_desc'] = 'Count downloads increases DB load';

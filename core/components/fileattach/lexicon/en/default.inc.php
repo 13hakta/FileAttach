@@ -3,6 +3,7 @@ $_lang['fileattach'] = 'Attached files';
 $_lang['fileattach.menu_desc'] = 'Files attached in resources.';
 $_lang['fileattach.intro_msg'] = 'You can select multiple items by holding Shift or Ctrl button.';
 
+$_lang['fileattach.rank'] = 'Rank';
 $_lang['fileattach.downloads'] = 'Downloads';
 $_lang['fileattach.items'] = 'Files';
 
@@ -20,3 +21,4 @@ $_lang['fileattach.item_err_save'] = 'An error occurred while trying to save the
 $_lang['fileattach.reset_confirm'] = 'Are you sure to reset download count?';
 $_lang['fileattach.resets_confirm'] = 'Are you sure to reset download count for selected files?';
 $_lang['fileattach.calculate'] = 'Calculate hash';
+$_lang['fileattach.ddtext'] = 'Drag and drop';

@@ -43,8 +43,11 @@ class FileItemDownloadrocessor extends modObjectGetProcessor {
     }
 
     public function beforeOutput() {
-	$this->object->set('download', $this->object->get('download') + 1);
-	$this->object->save();
+	// Count downloads if allowed by config
+	if ($this->modx->getOption('fileattach.download', null, true)) {
+	    $this->object->set('download', $this->object->get('download') + 1);
+	    $this->object->save();
+	}
     }
 }
 
