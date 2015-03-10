@@ -56,7 +56,6 @@ class FileItemRemoveProcessor extends modObjectProcessor {
 
 		return $this->success();
 	}
-
 }
 
 return 'FileItemRemoveProcessor';

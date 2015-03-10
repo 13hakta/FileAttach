@@ -23,9 +23,15 @@
 */
 
 class FileItem extends xPDOSimpleObject {
-    public $source = false;
-    public $files_path = '';
+    $source = false;
+    $files_path = '';
 
+
+    /**
+     * Get the source, preparing it for usage.
+     *
+     * @return source
+     */
     private function getMediaSource() {
         if ($this->source) return $this->source;
         //get modMediaSource
@@ -40,27 +46,59 @@ class FileItem extends xPDOSimpleObject {
         return $this->source;
     }
 
-    public function getUrl() {
+
+    /**
+     * Get object URL
+     *
+     * @return string
+     */
+    function getUrl() {
         $ms = $this->getMediaSource();
 	return $ms->getBaseUrl() . $this->getPath();
     }
 
-    public function getPath() {
+
+    /**
+     * Get relative file path
+     *
+     * @return string
+     */
+    function getPath() {
 	return $this->files_path . $this->get('path') . $this->get('internal_name');
     }
 
-    public function getFullPath() {
+
+    /**
+     * Get full file path in fs
+     *
+     * @return string
+     */
+    function getFullPath() {
         $ms = $this->getMediaSource();
 	return $ms->getBasePath() . $this->getPath();
     }
 
-    public function getSize() {
+
+    /**
+     * Get file size
+     *
+     * @return int
+     */
+    function getSize() {
      $ms = $this->getMediaSource();
      $f = $ms->fileHandler->make($this->getFullPath(), array(), 'modFile');
      return $f->getSize();
     }
 
-    public function rename($newname, $forceSave = true) {
+
+    /**
+     * Rename file
+     *
+     * @param string $newname
+     * @param boolean $forceSave
+     * @return boolean
+     */
+    function rename($newname, $forceSave = true) {
 	$local_path = $this->files_path . $this->get('path');
 
         $ms = $this->getMediaSource();
@@ -77,7 +115,14 @@ class FileItem extends xPDOSimpleObject {
 	return true;
     }
 
-    public function setPrivate($state) {
+
+    /**
+     * Set privacy mode
+     *
+     * @param boolean $state
+     * @return boolean
+     */
+    function setPrivate($state) {
 	if ($this->get('private') == $state) return true;
 
         $ms = $this->getMediaSource();
@@ -119,7 +164,13 @@ class FileItem extends xPDOSimpleObject {
 	return false;
     }
 
-    public function remove(array $ancestors= array ()) {
+
+    /**
+     * Remove file and object
+     *
+     * @param array $ancestors
+     */
+    function remove(array $ancestors= array ()) {
 	$filename = $this->getPath();
         if (!empty($filename)) {
             $ms = $this->getMediaSource();
@@ -131,12 +182,13 @@ class FileItem extends xPDOSimpleObject {
         return parent::remove($ancestors);
     }
 
+
     /* Generate Filename
      *
      * @param   integer  $length        Length of generated sequence
      * @return  string
      */
-    public function generateName($length = 32) {
+    function generateName($length = 32) {
 	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
         $charactersLength = strlen($characters);
 
@@ -150,12 +202,13 @@ class FileItem extends xPDOSimpleObject {
 	return $newname;
     }
 
+
     /* Sanitize Filename
      *
      * @param   string  $str        Input file name
      * @return  string
      */
-    public function sanitizeName($str) {
+    function sanitizeName($str) {
 	$bad = array(
         '../', '<!--', '-->', '<', '>',
         "'", '"', '&', '$', '#',

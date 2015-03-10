@@ -18,3 +18,12 @@ Changelog for FileAttach.
 - Add download option
 - Add rank field in model
 - Add ability to manually rearrange order
+
+1.0.3
+==============
+- Add compatibility with MODx v2.2
+- Snippet fix config loading
+- Enhance media source:
+    - Add ability to delete files
+    - Extension distinction
+    - Display thumbnails

@@ -21,7 +21,7 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_UPGRADE:
 			// Upgrade DB scheme if there were older packages installed
 			$package = $modx->getObject('modTransportPackage', array(
-			    'package_name' => PKG_NAME,
+			    'package_name' => 'FileAttach',
 			    'version_major' => '1',
 			    'version_minor' => '0',
 			    'version_patch:<' => '2'));

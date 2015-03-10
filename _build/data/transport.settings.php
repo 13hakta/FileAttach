@@ -17,7 +17,7 @@ $tmp = array(
 	'description' => 'setting_fileattach.files_path_desc',
 	'xtype' => 'textfield',
 	'lexicon' => 'fileattach:setting',
-	'value' => ''
+	'value' => '/'
     ),
     'templates' => array(
 	'key' => 'fileattach.templates',

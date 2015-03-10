@@ -44,9 +44,9 @@ $showSize = $modx->getOption('showSize', $scriptProperties, false);
 if ($makeUrl) {
  if (!$privateUrl || $showSize) {
   // Get base URLs
-  $mediaSource = $this->xpdo->getOption('fileattach.mediasource',null,1);
+  $mediaSource = $modx->getOption('fileattach.mediasource',null,1);
 
-  $ms = $this->xpdo->getObject('sources.modMediaSource', array('id' => $mediaSource));
+  $ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
   $ms->initialize();
 
   $files_path = $modx->getOption('fileattach.files_path');

@@ -325,7 +325,10 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 
 	uploadFiles: function(btn,e) {
 	    if (!this.uploader) {
-        	this.uploader = new MODx.util.MultiUploadDialog.Dialog({
+		aVer = MODx.config.version.split('.');
+		uploaddialog = ((aVer[0] == 2) && aVer[1] >= 3)? MODx.util.MultiUploadDialog.Dialog : Ext.ux.UploadDialog.Dialog;
+
+        	this.uploader = new uploaddialog({
 		    title: _('upload'),
 		    url: this.config.url,
 		    base_params: {

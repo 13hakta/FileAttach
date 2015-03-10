@@ -59,5 +59,4 @@ class FileAttach {
 		$this->modx->addPackage('fileattach', $this->config['modelPath']);
 		$this->modx->lexicon->load('fileattach:default');
 	}
-
 }
