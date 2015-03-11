@@ -23,8 +23,8 @@
 */
 
 class FileItem extends xPDOSimpleObject {
-    $source = false;
-    $files_path = '';
+    public $source = false;
+    public $files_path = '';
 
 
     /**
