@@ -13,6 +13,7 @@ $sources = array(
 	'model' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/',
 	'schema' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/schema/',
 	'xml' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/schema/' . PKG_NAME_LOWER . '.mysql.schema.xml',
+	'xml2' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/schema/' . PKG_NAME_LOWER . '.sqlsrv.schema.xml',
 );
 unset($root);
 
@@ -36,9 +37,11 @@ $generator = $manager->getGenerator();
 
 // Remove old model
 rrmdir($sources['model'] . PKG_NAME_LOWER . '/mysql');
+rrmdir($sources['model'] . PKG_NAME_LOWER . '/sqlsrv');
 
 // Generate a new one
 $generator->parseSchema($sources['xml'], $sources['model']);
+$generator->parseSchema($sources['xml2'], $sources['model']);
 
 $modx->log(modX::LOG_LEVEL_INFO, 'Model generated.');
 if (!XPDO_CLI_MODE) {

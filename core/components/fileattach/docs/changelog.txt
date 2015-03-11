@@ -24,6 +24,10 @@ Changelog for FileAttach.
 - Add compatibility with MODx v2.2
 - Snippet fix config loading
 - Enhance media source:
-    - Add ability to delete files
     - Extension distinction
     - Display thumbnails
+
+1.0.4
+==============
+- DB scheme enhance
+- Add SQLSrv support

@@ -21,7 +21,7 @@ $xpdo_meta_map['FileItem']= array (
   array (
     'name' => 
     array (
-      'dbtype' => 'varchar',
+      'dbtype' => 'nvarchar',
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
@@ -30,7 +30,7 @@ $xpdo_meta_map['FileItem']= array (
     ),
     'internal_name' => 
     array (
-      'dbtype' => 'varchar',
+      'dbtype' => 'nvarchar',
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
@@ -38,7 +38,7 @@ $xpdo_meta_map['FileItem']= array (
     ),
     'path' => 
     array (
-      'dbtype' => 'varchar',
+      'dbtype' => 'nvarchar',
       'precision' => '100',
       'phptype' => 'string',
       'null' => false,
@@ -46,7 +46,7 @@ $xpdo_meta_map['FileItem']= array (
     ),
     'description' => 
     array (
-      'dbtype' => 'varchar',
+      'dbtype' => 'nvarchar',
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
@@ -54,7 +54,7 @@ $xpdo_meta_map['FileItem']= array (
     ),
     'hash' => 
     array (
-      'dbtype' => 'varchar',
+      'dbtype' => 'nvarchar',
       'precision' => '50',
       'phptype' => 'string',
       'null' => false,
@@ -62,10 +62,8 @@ $xpdo_meta_map['FileItem']= array (
     ),
     'private' => 
     array (
-      'dbtype' => 'tinyint',
-      'precision' => '1',
+      'dbtype' => 'bit',
       'phptype' => 'boolean',
-      'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
     ),
