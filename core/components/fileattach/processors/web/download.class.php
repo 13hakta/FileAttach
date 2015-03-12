@@ -22,7 +22,7 @@
  * @package FileAttach
 */
 
-class FileItemDownloadrocessor extends modObjectGetProcessor {
+class FileItemDownloadProcessor extends modObjectGetProcessor {
     public $objectType = 'FileItem';
     public $classKey = 'FileItem';
     public $languageTopics = array('fileattach:default');
@@ -51,4 +51,4 @@ class FileItemDownloadrocessor extends modObjectGetProcessor {
     }
 }
 
-return 'FileItemDownloadrocessor';
+return 'FileItemDownloadProcessor';
