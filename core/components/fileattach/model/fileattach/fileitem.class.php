@@ -28,6 +28,18 @@ class FileItem extends xPDOSimpleObject {
 
 
     /**
+     * Creates a FileItem instance
+     *
+     * {@inheritdoc}
+     */
+    function __construct(& $xpdo) {
+        parent :: __construct($xpdo);
+
+	$this->files_path = $this->xpdo->getOption('fileattach.files_path');
+    }
+
+
+    /**
      * Get the source, preparing it for usage.
      *
      * @return source
@@ -40,8 +52,6 @@ class FileItem extends xPDOSimpleObject {
         $def = $this->xpdo->getObject('sources.modMediaSource', array('id' => $mediaSource));
         $def->initialize();
         $this->source = $def;
-
-	$this->files_path = $this->xpdo->getOption('fileattach.files_path');
 
         return $this->source;
     }
@@ -173,7 +183,7 @@ class FileItem extends xPDOSimpleObject {
     function remove(array $ancestors= array ()) {
 	$filename = $this->getPath();
         if (!empty($filename)) {
-            $ms = $this->getMediaSource();
+    	    $ms = $this->getMediaSource();
             if (!@$ms->removeObject($filename)) {
                 $this->xpdo->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] An error occurred while trying to remove the attachment file at: ' . $filename);
             }
