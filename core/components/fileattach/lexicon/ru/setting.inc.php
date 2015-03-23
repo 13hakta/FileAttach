@@ -4,7 +4,7 @@ $_lang['setting_fileattach.mediasource'] = 'Медиа источник';
 $_lang['setting_fileattach.mediasource_desc'] = 'Медиа источник для сохранения файлов';
 
 $_lang['setting_fileattach.files_path'] = 'Путь к файлам';
-$_lang['setting_fileattach.files_path_desc'] = 'Путь внутри файлового источника для сохранения';
+$_lang['setting_fileattach.files_path_desc'] = 'Путь внутри файлового источника для сохранения. Должно завершаться на "/".';
 
 $_lang['setting_fileattach.templates'] = 'Шаблоны';
 $_lang['setting_fileattach.templates_desc'] = 'Список шаблонов для работы модуля. Перечисление через запятую. По умолчанию работает для всех ресурсов';

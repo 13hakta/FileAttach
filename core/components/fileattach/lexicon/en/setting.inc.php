@@ -4,7 +4,7 @@ $_lang['setting_fileattach.mediasource'] = 'Media source';
 $_lang['setting_fileattach.mediasource_desc'] = 'Media source to store files';
 
 $_lang['setting_fileattach.files_path'] = 'Path to files';
-$_lang['setting_fileattach.files_path_desc'] = 'Path to files inside media source';
+$_lang['setting_fileattach.files_path_desc'] = 'Path to files inside media source. Must end with "/".';
 
 $_lang['setting_fileattach.templates'] = 'Templates';
 $_lang['setting_fileattach.templates_desc'] = 'List of templates when module activates. List comma delimited. By default activates for all resources';
