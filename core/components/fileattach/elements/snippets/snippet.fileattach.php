@@ -30,8 +30,8 @@ if (!$FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOptio
 
 // Do your snippet code here.
 $tpl = $modx->getOption('tpl', $scriptProperties, 'FileItemTpl');
-$sortby = $modx->getOption('sortby', $scriptProperties, 'name');
-$sortdir = $modx->getOption('sortbir', $scriptProperties, 'ASC');
+$sortby = $modx->getOption('sortBy', $scriptProperties, 'name');
+$sortdir = $modx->getOption('sortDir', $scriptProperties, 'ASC');
 $limit = $modx->getOption('limit', $scriptProperties, 0);
 $outputSeparator = $modx->getOption('outputSeparator', $scriptProperties, "\n");
 $toPlaceholder = $modx->getOption('toPlaceholder', $scriptProperties, false);
