@@ -22,7 +22,7 @@
  * @package fileattach
  */
 
-$success= false;
+$success = false;
 
 if ($object->xpdo) {
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
@@ -43,7 +43,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             }
         }
 
-        $success= true;
+        $success = true;
         break;
     case xPDOTransport::ACTION_UNINSTALL:
         $modx =& $object->xpdo;
@@ -51,7 +51,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             $modx->removeExtensionPackage('fileattach');
         }
 
-        $success= true;
+	$success = true;
         break;
  }
 }

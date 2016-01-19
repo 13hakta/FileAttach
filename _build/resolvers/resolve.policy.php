@@ -32,32 +32,35 @@ if ($object->xpdo) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
             $modx =& $object->xpdo;
-            $modelPath = $modx->getOption('fileattach.core_path',null,$modx->getOption('core_path').'components/fileattach/').'model/';
+            $modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path').'components/fileattach/').'model/';
             $modx->addPackage('fileattach',$modelPath);
 
             $modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 
             /* assign policy to template */
-            $policy = $transport->xpdo->getObject('modAccessPolicy',array(
-                'name' => 'File Attach'
-            ));
-            if ($policy) {
-                $template = $transport->xpdo->getObject('modAccessPolicyTemplate',array('name' => 'FileAttachTemplate'));
-                if ($template) {
-                    $policy->set('template',$template->get('id'));
-                    $policy->save();
-                } else {
-                    $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find FileAttacTemplate Access Policy Template!');
-                }
-            } else {
-                $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find File Attach Access Policy!');
+            $template = $transport->xpdo->getObject('modAccessPolicyTemplate', array('name' => 'FileAttachTemplate'));
+            if (!$template) {
+                $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find FileAttacTemplate Access Policy Template!');
             }
 
+	    $policyList = array('File Attach', 'File Attach Download');
+
+      foreach ($policyList as $policyName) {
+          $policy = $transport->xpdo->getObject('modAccessPolicy', array('name' => $policyName));
+
+          if ($policy) {
+              $policy->set('template', $template->get('id'));
+              $policy->save();
+          } else
+              $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find ' . $policyName . ' Access Policy!');
+      }
+
             /* assign policy to admin group */
-            $policy = $modx->getObject('modAccessPolicy',array('name' => 'File Attach'));
-            $adminGroup = $modx->getObject('modUserGroup',array('name' => 'Administrator'));
+            $policy = $modx->getObject('modAccessPolicy', array('name' => 'File Attach'));
+
+            $adminGroup = $modx->getObject('modUserGroup', array('name' => 'Administrator'));
             if ($policy && $adminGroup) {
-                $access = $modx->getObject('modAccessContext',array(
+                $access = $modx->getObject('modAccessContext', array(
                     'target' => 'mgr',
                     'principal_class' => 'modUserGroup',
                     'principal' => $adminGroup->get('id'),
@@ -76,6 +79,31 @@ if ($object->xpdo) {
                     $access->save();
                 }
             }
+
+            /* assign policy to anonymous group */
+            if (isset($options['allow_anonymous'])) {
+                $policy = $modx->getObject('modAccessPolicy', array('name' => 'File Attach Download'));
+
+                $access = $modx->getObject('modAccessContext', array(
+                    'target' => 'mgr',
+                    'principal_class' => 'modUserGroup',
+                    'principal' => 0,
+                    'authority' => 9999,
+                    'policy' => $policy->get('id'),
+                ));
+                if (!$access) {
+                    $access = $modx->newObject('modAccessContext');
+                    $access->fromArray(array(
+                        'target' => 'mgr',
+                        'principal_class' => 'modUserGroup',
+                        'principal' => 0,
+                        'authority' => 9999,
+                        'policy' => $policy->get('id'),
+                    ));
+                    $access->save();
+                }
+            }
+
             $modx->setLogLevel(modX::LOG_LEVEL_INFO);
             break;
     }
