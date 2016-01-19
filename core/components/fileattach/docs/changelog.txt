@@ -31,3 +31,8 @@ Changelog for FileAttach.
 ==============
 - DB scheme enhance
 - Add SQLSrv support
+
+1.0.5
+==============
+- Add ability to allow anonymous download
+- Fix snippet arguments typo
