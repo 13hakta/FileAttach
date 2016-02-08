@@ -85,7 +85,7 @@ if ($object->xpdo) {
                 $policy = $modx->getObject('modAccessPolicy', array('name' => 'File Attach Download'));
 
                 $access = $modx->getObject('modAccessContext', array(
-                    'target' => 'mgr',
+                    'target' => 'web',
                     'principal_class' => 'modUserGroup',
                     'principal' => 0,
                     'authority' => 9999,
@@ -94,7 +94,7 @@ if ($object->xpdo) {
                 if (!$access) {
                     $access = $modx->newObject('modAccessContext');
                     $access->fromArray(array(
-                        'target' => 'mgr',
+                        'target' => 'web',
                         'principal_class' => 'modUserGroup',
                         'principal' => 0,
                         'authority' => 9999,

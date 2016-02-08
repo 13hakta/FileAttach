@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -35,27 +35,28 @@ $sortdir = $modx->getOption('sortDir', $scriptProperties, 'ASC');
 $limit = $modx->getOption('limit', $scriptProperties, 0);
 $outputSeparator = $modx->getOption('outputSeparator', $scriptProperties, "\n");
 $toPlaceholder = $modx->getOption('toPlaceholder', $scriptProperties, false);
-$showHASH = $modx->getOption('showHASH', $scriptProperties, false);
 $resource = $modx->getOption('resource', $scriptProperties, 0);
 $makeUrl = $modx->getOption('makeUrl', $scriptProperties, true);
 $privateUrl = $modx->getOption('privateUrl', $scriptProperties, false);
+$showHASH = $modx->getOption('showHASH', $scriptProperties, false);
 $showSize = $modx->getOption('showSize', $scriptProperties, false);
+$showExt = $modx->getOption('showExt', $scriptProperties, false);
 
 if ($makeUrl) {
- if (!$privateUrl || $showSize) {
-  // Get base URLs
-  $mediaSource = $modx->getOption('fileattach.mediasource',null,1);
+    if (!$privateUrl || $showSize) {
+	// Get base URLs
+	$mediaSource = $modx->getOption('fileattach.mediasource',null,1);
 
-  $ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
-  $ms->initialize();
+	$ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
+	$ms->initialize();
 
-  $files_path = $modx->getOption('fileattach.files_path');
-  $public_url = $ms->getBaseUrl() . $files_path;
-  $docs_path  = $ms->getBasePath() . $files_path;
- }
+	$files_path = $modx->getOption('fileattach.files_path');
+	$public_url = $ms->getBaseUrl() . $files_path;
+	$docs_path  = $ms->getBasePath() . $files_path;
+    }
 
- $private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
- $private_url .= 'connector.php?action=web/download&ctx=web&id=';
+    $private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
+    $private_url .= 'connector.php?action=web/download&ctx=web&id=';
 }
 
 // Build query
@@ -64,7 +65,7 @@ $c->sortby($sortby, $sortdir);
 $c->limit($limit);
 
 if ($showHASH)
- $c->select('hash');
+    $c->select('hash');
 
 $c->where(array('docid' => ($resource > 0)? $resource : $modx->resource->get('id')));
 
@@ -74,31 +75,36 @@ $items = $modx->getIterator('FileItem', $c);
 $list = array();
 /** @var FileItem $item */
 foreach ($items as $item) {
- $item->source = $ms;
- $item->files_path = $files_path;
+    $item->source = $ms;
+    $item->files_path = $files_path;
 
- $itemArr = $item->toArray();
+    $itemArr = $item->toArray();
 
- if ($makeUrl) {
-  if ($item->get('private') || $privateUrl)
-   $itemArr['url'] = $private_url . $item->get('id');
-    else
-   $itemArr['url'] = $public_url . $item->get('path') . $item->get('name');
- }
+    if ($makeUrl) {
+	if ($itemArr['private'] || $privateUrl)
+	    $itemArr['url'] = $private_url . $itemArr['id'];
+	else
+	    $itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['name'];
+    }
 
- if ($showSize)
-  $itemArr['size'] = $item->getSize();
+    if ($showSize)
+	$itemArr['size'] = $item->getSize();
 
- $list[] = $modx->getChunk($tpl, $itemArr);
+    if ($showExt) {
+	$itemArr['ext'] = strtolower(
+	    pathinfo($itemArr['name'], PATHINFO_EXTENSION));
+    }
+
+    $list[] = $modx->getChunk($tpl, $itemArr);
 }
 
 // Output
 $output = implode($outputSeparator, $list);
 if (!empty($toPlaceholder)) {
- // If using a placeholder, output nothing and set output to specified placeholder
- $modx->setPlaceholder($toPlaceholder, $output);
+    // If using a placeholder, output nothing and set output to specified placeholder
+    $modx->setPlaceholder($toPlaceholder, $output);
 
- return '';
+    return '';
 }
 
 return $output;

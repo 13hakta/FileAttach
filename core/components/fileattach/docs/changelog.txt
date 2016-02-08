@@ -36,3 +36,7 @@ Changelog for FileAttach.
 ==============
 - Add ability to allow anonymous download
 - Fix snippet arguments typo
+
+1.0.5 pl1
+==============
+- Add ability to use extension placeholder
