@@ -65,7 +65,9 @@ $c->sortby($sortby, $sortdir);
 $c->limit($limit);
 
 if ($showHASH)
-    $c->select('hash');
+    $c->select($modx->getSelectColumns('FileItem', 'FileItem'));
+else
+    $c->select($modx->getSelectColumns('FileItem', 'FileItem', '', array('hash'), true));
 
 $c->where(array('docid' => ($resource > 0)? $resource : $modx->resource->get('id')));
 
