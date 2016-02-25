@@ -93,14 +93,18 @@ class modFileAttachUploadProcessor extends modProcessor {
 	}
 
 	$path = $this->source->getBasePath() . $this->getProperty('path');
+	$list = array();
 
         // Create serie of FileItem objects
 	foreach ($_FILES as $file) {
 	 $fileitem = $this->modx->newObject('FileItem');
 
+         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+         $ext = strtolower($ext);
+
 	 // Generate name and check for existence
 	 if ($this->privatemode)
-	  $this->filename = $fileitem->generateName();
+	  $this->filename = $fileitem->generateName() . ".$ext";
 	 else
 	  $this->filename = $file['name'];
 
@@ -111,8 +115,9 @@ class modFileAttachUploadProcessor extends modProcessor {
 	  $f = $this->source->fileHandler->make($fullpath, array(), 'modFile');
 	  if (!$f->exists()) break;
 
+          // Generate new name again
 	  if ($this->privatemode)
-	   $this->filename = $fileitem->generateName();
+	   $this->filename = $fileitem->generateName() . ".$ext";
 	  else
 	   $this->filename = '_' . $this->filename;
          };
@@ -149,9 +154,12 @@ class modFileAttachUploadProcessor extends modProcessor {
          }
 	}
 
+	$list[] = array(
+		    'id' => $fileitem->get('id'),
+		    'name' => $file['name']);
         }
 
-        return $this->success();
+        return $this->outputArray($list, count($list));
     }
 
     /**

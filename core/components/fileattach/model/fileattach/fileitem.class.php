@@ -140,9 +140,12 @@ class FileItem extends xPDOSimpleObject {
 	$local_path = $this->files_path . $this->get('path');
 	$path = $ms->getBasePath() . $local_path;
 
+        $ext = pathinfo($this->get('name'), PATHINFO_EXTENSION);
+        $ext = strtolower($ext);
+
 	// Generate name and check for existence
 	if ($state)
-	 $filename = $this->generateName();
+	 $filename = $this->generateName() . ".$ext";
 	else
 	 $filename = $this->get('name');
 
@@ -153,8 +156,9 @@ class FileItem extends xPDOSimpleObject {
 	 $f = $ms->fileHandler->make($path . '/' . $filename, array(), 'modFile');
 	 if (!$f->exists()) break;
 
+         // Generate new name again
 	 if ($state)
-	  $filename = $this->generateName();
+	  $filename = $this->generateName() . ".$ext";
 	 else
 	  $filename = $this->generateName(4) . '_' . $filename;
         }
@@ -206,8 +210,6 @@ class FileItem extends xPDOSimpleObject {
 
 	for ($i = 0; $i < $length; $i++)
          $newname .= $characters[rand(0, $charactersLength - 1)];
-
-	$newname .= '.txt';
 
 	return $newname;
     }
