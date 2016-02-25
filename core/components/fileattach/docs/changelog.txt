@@ -40,3 +40,10 @@ Changelog for FileAttach.
 1.0.5 pl1
 ==============
 - Add ability to use extension placeholder
+
+1.0.6
+==============
+- Add frontend processors
+- Add new policy for frontend uploader
+- Following system upload file type list
+- Don't double save on update
