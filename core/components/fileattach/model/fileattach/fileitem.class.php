@@ -107,12 +107,8 @@ class FileItem extends xPDOSimpleObject {
      * @param string $newname
      * @return boolean
      */
-    function rename($newname, $newdoc = 0) {
-        if ($newdoc > 0) {
-
-        } else {
-	 $local_path = $this->files_path . $this->get('path');
-        }
+    function rename($newname) {
+	$local_path = $this->files_path . $this->get('path');
 
         $ms = $this->getMediaSource();
 
