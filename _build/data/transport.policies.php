@@ -12,10 +12,13 @@ $policies = array();
 $tmp = array(
 	'File Attach' => array(
 	    'description' => 'A policy for editing attached files to resources.',
-	    'data' => '{"fileattach.totallist":true,"fileattach.doclist":true,"fileattach.download":true}'),
+	    'data' => '{"fileattach.totallist":true,"fileattach.doclist":true,"fileattach.download":true,"fileattach.list":true,"fileattach.remove":true}'),
 	'File Attach Download' => array(
 	    'description' => 'A policy for downloading attached files to resources.',
 	    'data' => '{"fileattach.download":true}'),
+	'File Attach Frontend' => array(
+	    'description' => 'A policy for frontend uploading files to resources.',
+	    'data' => '{"fileattach.download":true,"fileattach.list":true,"fileattach.remove":true}')
 	);
 
 foreach ($tmp as $k => $v) {

@@ -43,17 +43,17 @@ if ($object->xpdo) {
                 $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find FileAttacTemplate Access Policy Template!');
             }
 
-	    $policyList = array('File Attach', 'File Attach Download');
+	    $policyList = array('File Attach', 'File Attach Download', 'File Attach Frontend');
 
-      foreach ($policyList as $policyName) {
-          $policy = $transport->xpdo->getObject('modAccessPolicy', array('name' => $policyName));
+    	    foreach ($policyList as $policyName) {
+        	$policy = $transport->xpdo->getObject('modAccessPolicy', array('name' => $policyName));
 
-          if ($policy) {
-              $policy->set('template', $template->get('id'));
-              $policy->save();
-          } else
-              $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find ' . $policyName . ' Access Policy!');
-      }
+        	if ($policy) {
+            	    $policy->set('template', $template->get('id'));
+            	    $policy->save();
+        	} else
+            	    $modx->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] Could not find ' . $policyName . ' Access Policy!');
+    	    }
 
             /* assign policy to admin group */
             $policy = $modx->getObject('modAccessPolicy', array('name' => 'File Attach'));
