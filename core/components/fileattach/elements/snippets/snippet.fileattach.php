@@ -72,7 +72,7 @@ if ($makeUrl) {
     }
 
     $private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
-    $private_url .= 'connector.php?action=web/download&ctx=web&id=';
+    $private_url .= 'connector.php?action=web/download&ctx=web&fid=';
 }
 
 // Build query
