@@ -45,6 +45,8 @@ class FileItemCreateProcessor extends modObjectCreateProcessor {
 		$name = $this->object->sanitizeName($name);
 		$this->setProperty('name', $name);
 
+		$this->setProperty('fid', $this->object->generateName());
+
 		if (empty($name)) {
 			$this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_name'));
 		}

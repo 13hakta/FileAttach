@@ -55,6 +55,10 @@ $tmp = array(
 		'type' => 'combo-boolean',
 		'value' => false,
 	),
+	'groups' => array(
+		'type' => 'textfield',
+		'value' => '',
+	),
 );
 
 foreach ($tmp as $k => $v) {

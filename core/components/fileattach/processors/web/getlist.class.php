@@ -71,12 +71,13 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 		return $c;
 	}
 
-	public function prepareRow(xPDOObject $object) {
-	    $resArray = array(
+    public function prepareRow(xPDOObject $object) {
+	$resArray = array(
 		'id' => $object->get('id'),
-		'name'   => $object->get('name'),
-		'hash'   => $object->get('hash')
-	    );
+		'fid' => $object->get('fid'),
+		'name' => $object->get('name'),
+		'hash' => $object->get('hash')
+	);
 
         return $resArray;
     }

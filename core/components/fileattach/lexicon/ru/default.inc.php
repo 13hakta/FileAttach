@@ -8,6 +8,7 @@ $_lang['fileattach.rank'] = 'Порядок';
 $_lang['fileattach.downloads'] = 'Скачано';
 $_lang['fileattach.items'] = 'файлы';
 
+$_lang['fileattach.fid'] = 'ID файла';
 $_lang['fileattach.hash'] = 'Контрольная сумма SHA1';
 $_lang['fileattach.size'] = 'Размер';
 

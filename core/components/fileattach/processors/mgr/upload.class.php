@@ -138,6 +138,8 @@ class modFileAttachUploadProcessor extends modProcessor {
             }
             return $this->failure($msg);
         } else {
+	    $fid = $fileitem->generateName();
+	    $fileitem->set('fid', $fid);
 	    $fileitem->set('docid', $this->getProperty('docid'));
 	    $fileitem->set('name', $file['name']);
 	    $fileitem->set('internal_name', $this->filename);
@@ -152,12 +154,13 @@ class modFileAttachUploadProcessor extends modProcessor {
          if (!$fileitem->save()) {
             return $this->failure($this->modx->lexicon('item_err_save'));
          }
-	}
 
-	$list[] = array(
+	 $list[] = array(
 		    'id' => $fileitem->get('id'),
+		    'fid' => $fid,
 		    'name' => $file['name']);
-        }
+	}
+	}
 
         return $this->outputArray($list, count($list));
     }

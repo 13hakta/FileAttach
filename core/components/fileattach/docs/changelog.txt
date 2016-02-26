@@ -47,3 +47,9 @@ Changelog for FileAttach.
 - Add new policy for frontend uploader
 - Following system upload file type list
 - Don't double save on update
+
+1.0.7
+==============
+- Now files are available by unique string file ID
+- Add ability to restrict link list access with groups
+- Automatically open picker after upload button is clicked

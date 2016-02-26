@@ -78,12 +78,18 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 			id: config.id + '-description',
 			anchor: '100%',
 		}, {
-			id: config.id + '-hash',
         		xtype: 'statictextfield',
 			fieldLabel: _('fileattach.hash'),
+			id: config.id + '-hash',
 			name: 'hash',
 			hidden: (config.record.object.hash == ''),
 			anchor: '100%'
+		}, {
+        		xtype: 'statictextfield',
+			fieldLabel: _('fileattach.fid'),
+			name: 'fid',
+			id: config.id + '-fid',
+			anchor: '100%',
 		}];
 	
 	if (config.record.object.hash == '')
@@ -340,7 +346,10 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
             this.uploader.on('hide', this.refresh,this);
             this.uploader.on('close', this.refresh,this);
         }
-        this.uploader.show(btn);
+
+	// Automatically open picker
+	this.uploader.show(btn);
+        this.uploader.buttons[0].input_file.dom.click();
     },
 
 	getFields: function (config) {

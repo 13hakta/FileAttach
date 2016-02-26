@@ -41,6 +41,22 @@ $privateUrl = $modx->getOption('privateUrl', $scriptProperties, false);
 $showHASH = $modx->getOption('showHASH', $scriptProperties, false);
 $showSize = $modx->getOption('showSize', $scriptProperties, false);
 $showExt = $modx->getOption('showExt', $scriptProperties, false);
+$groups = $modx->getOption('groups', $scriptProperties, '');
+
+// Check access
+if ($groups != '') {
+    // Forbid access for non-authorized visitor
+    if (empty($modx->user)) return;
+
+    $accessGroups = explode(',', $groups);
+
+    // Argument set erroneously
+    if (empty($accessGroups)) return;
+
+    $accessGroups = array_map('trim', $accessGroups);
+
+    if (!$modx->user->isMember($accessGroups)) return;
+}
 
 if ($makeUrl) {
     if (!$privateUrl || $showSize) {
@@ -84,7 +100,7 @@ foreach ($items as $item) {
 
     if ($makeUrl) {
 	if ($itemArr['private'] || $privateUrl)
-	    $itemArr['url'] = $private_url . $itemArr['id'];
+	    $itemArr['url'] = $private_url . $itemArr['fid'];
 	else
 	    $itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['name'];
     }
