@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, a simple commenting component for MODx Revolution.
  *
@@ -26,9 +26,15 @@ $success = false;
 
 if ($object->xpdo) {
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-    case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
+        if (!isset($options['install_pack'])) {
+    	    $modx =& $object->xpdo;
+    	    if ($modx instanceof modX) {
+        	$modx->removeExtensionPackage('fileattach');
+    	    }
+	}
 
+    case xPDOTransport::ACTION_INSTALL:
         if (isset($options['install_pack'])) {
             /** @var modX $modx */
             $modx =& $object->xpdo;

@@ -4,7 +4,7 @@
 define('PKG_NAME', 'FileAttach');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
 
-define('PKG_VERSION', '1.0.6');
+define('PKG_VERSION', '1.0.7');
 define('PKG_RELEASE', 'pl');
 define('PKG_AUTO_INSTALL', true);
 define('PKG_NAMESPACE_PATH', '{core_path}components/' . PKG_NAME_LOWER . '/');
@@ -13,16 +13,20 @@ define('PKG_NAMESPACE_PATH', '{core_path}components/' . PKG_NAME_LOWER . '/');
 if (isset($_SERVER['MODX_BASE_PATH'])) {
 	define('MODX_BASE_PATH', $_SERVER['MODX_BASE_PATH']);
 }
-elseif (file_exists(dirname(dirname(dirname(__FILE__))) . '/core')) {
+elseif (file_exists(dirname(dirname(dirname(__FILE__))) . '/connectors')) {
 	define('MODX_BASE_PATH', dirname(dirname(dirname(__FILE__))) . '/');
 }
 else {
 	define('MODX_BASE_PATH', dirname(dirname(dirname(dirname(__FILE__)))) . '/');
 }
-define('MODX_CORE_PATH', MODX_BASE_PATH . 'core/');
+
+/* use config from installed MODx */
+require MODX_BASE_PATH . 'config.core.php';
+
 define('MODX_MANAGER_PATH', MODX_BASE_PATH . 'manager/');
 define('MODX_CONNECTORS_PATH', MODX_BASE_PATH . 'connectors/');
 define('MODX_ASSETS_PATH', MODX_BASE_PATH . 'assets/');
+
 
 /* define urls */
 define('MODX_BASE_URL', '/');
@@ -43,9 +47,9 @@ define('BUILD_POLICY_UPDATE', true);
 define('BUILD_POLICY_TEMPLATE_UPDATE', false);
 define('BUILD_PERMISSION_UPDATE', false);
 
-define('BUILD_CHUNK_STATIC', true);
-define('BUILD_SNIPPET_STATIC', true);
-define('BUILD_PLUGIN_STATIC', true);
+define('BUILD_CHUNK_STATIC', false);
+define('BUILD_SNIPPET_STATIC', false);
+define('BUILD_PLUGIN_STATIC', false);
 
 $BUILD_RESOLVERS = array(
 	'tables',
