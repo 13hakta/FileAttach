@@ -3,30 +3,34 @@
 	   version="1.1">
 
 	<object class="FileItem" table="files" extends="xPDOSimpleObject">
-		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default="" index="index"/>
+		<field key="fid" dbtype="varchar" precision="40" phptype="string" null="false" default=""/>
+		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
 		<field key="internal_name" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
 		<field key="path" dbtype="varchar" precision="100" phptype="string" null="false" default=""/>
 		<field key="description" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
 		<field key="hash" dbtype="varchar" precision="50" phptype="string" null="false" default=""/>
 
-    		<field key="private" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0" />
+    		<field key="private" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0"/>
     		<field key="download" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
 
-    		<field key="docid" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="index" />
-    		<field key="uid" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="index" />
-    		<field key="rank" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0" />
+    		<field key="docid" dbtype="int" precision="10" phptype="integer" null="false" default="0"/>
+    		<field key="uid" dbtype="int" precision="10" phptype="integer" null="false" default="0"/>
+    		<field key="rank" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
 
+		<index alias="fid" name="fid" primary="false" unique="false" type="BTREE">
+		    <column key="fid" length="" collation="A" null="false"/>
+		</index>
 		<index alias="name" name="name" primary="false" unique="false" type="BTREE">
 		    <column key="name" length="" collation="A" null="false"/>
 		</index>
     		<index alias="docid" name="docid" primary="false" unique="false" type="BTREE">
-        	    <column key="docid" length="" collation="A" null="false" />
+        	    <column key="docid" length="" collation="A" null="false"/>
     		</index>
     		<index alias="uid" name="uid" primary="false" unique="false" type="BTREE">
-        	    <column key="uid" length="" collation="A" null="false" />
+        	    <column key="uid" length="" collation="A" null="false"/>
     		</index>
 
-    		<aggregate alias="Document" class="modResource" local="docid" foreign="id" cardinality="one" owner="foreign" />
+    		<aggregate alias="Document" class="modResource" local="docid" foreign="id" cardinality="one" owner="foreign"/>
 	</object>
 
 	<object class="FileAttachMediaSource" extends="modMediaSource">
