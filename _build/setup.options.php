@@ -17,15 +17,18 @@ if ($value) {
 }
 
 // Check if anonymous policy is installed
-$policy = $modx->getObject('modAccessPolicy', array('name' => 'File Attach Download'));
+$access = NULL;
 
-$access = $modx->getObject('modAccessContext', array(
-    'target' => 'web',
-    'principal_class' => 'modUserGroup',
-    'principal' => 0,
-    'authority' => 9999,
-    'policy' => $policy->get('id')
-));
+$policy = $modx->getObject('modAccessPolicy', array('name' => 'File Attach Download'));
+if ($policy) {
+    $access = $modx->getObject('modAccessContext', array(
+     'target' => 'web',
+     'principal_class' => 'modUserGroup',
+     'principal' => 0,
+     'authority' => 9999,
+     'policy' => $policy->get('id')
+ ));
+}
 
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 	case xPDOTransport::ACTION_INSTALL:
