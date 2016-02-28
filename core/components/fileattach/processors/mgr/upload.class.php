@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -93,14 +93,18 @@ class modFileAttachUploadProcessor extends modProcessor {
 	}
 
 	$path = $this->source->getBasePath() . $this->getProperty('path');
+	$list = array();
 
         // Create serie of FileItem objects
 	foreach ($_FILES as $file) {
 	 $fileitem = $this->modx->newObject('FileItem');
 
+         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+         $ext = strtolower($ext);
+
 	 // Generate name and check for existence
 	 if ($this->privatemode)
-	  $this->filename = $fileitem->generateName();
+	  $this->filename = $fileitem->generateName() . ".$ext";
 	 else
 	  $this->filename = $file['name'];
 
@@ -111,8 +115,9 @@ class modFileAttachUploadProcessor extends modProcessor {
 	  $f = $this->source->fileHandler->make($fullpath, array(), 'modFile');
 	  if (!$f->exists()) break;
 
+          // Generate new name again
 	  if ($this->privatemode)
-	   $this->filename = $fileitem->generateName();
+	   $this->filename = $fileitem->generateName() . ".$ext";
 	  else
 	   $this->filename = '_' . $this->filename;
          };
@@ -133,6 +138,8 @@ class modFileAttachUploadProcessor extends modProcessor {
             }
             return $this->failure($msg);
         } else {
+	    $fid = $fileitem->generateName();
+	    $fileitem->set('fid', $fid);
 	    $fileitem->set('docid', $this->getProperty('docid'));
 	    $fileitem->set('name', $file['name']);
 	    $fileitem->set('internal_name', $this->filename);
@@ -147,11 +154,15 @@ class modFileAttachUploadProcessor extends modProcessor {
          if (!$fileitem->save()) {
             return $this->failure($this->modx->lexicon('item_err_save'));
          }
+
+	 $list[] = array(
+		    'id' => $fileitem->get('id'),
+		    'fid' => $fid,
+		    'name' => $file['name']);
+	}
 	}
 
-        }
-
-        return $this->success();
+        return $this->outputArray($list, count($list));
     }
 
     /**

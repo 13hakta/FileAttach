@@ -6,6 +6,7 @@ $xpdo_meta_map['FileItem']= array (
   'extends' => 'xPDOSimpleObject',
   'fields' => 
   array (
+    'fid' => '',
     'name' => '',
     'internal_name' => '',
     'path' => '',
@@ -19,6 +20,14 @@ $xpdo_meta_map['FileItem']= array (
   ),
   'fieldMeta' => 
   array (
+    'fid' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '40',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
+    ),
     'name' => 
     array (
       'dbtype' => 'varchar',
@@ -26,7 +35,6 @@ $xpdo_meta_map['FileItem']= array (
       'phptype' => 'string',
       'null' => false,
       'default' => '',
-      'index' => 'index',
     ),
     'internal_name' => 
     array (
@@ -85,7 +93,6 @@ $xpdo_meta_map['FileItem']= array (
       'phptype' => 'integer',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'uid' => 
     array (
@@ -94,7 +101,6 @@ $xpdo_meta_map['FileItem']= array (
       'phptype' => 'integer',
       'null' => false,
       'default' => 0,
-      'index' => 'index',
     ),
     'rank' => 
     array (
@@ -108,6 +114,22 @@ $xpdo_meta_map['FileItem']= array (
   ),
   'indexes' => 
   array (
+    'fid' => 
+    array (
+      'alias' => 'fid',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'fid' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
     'name' => 
     array (
       'alias' => 'name',

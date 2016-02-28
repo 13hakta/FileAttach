@@ -6,22 +6,36 @@
  * @package fileattach
  * @subpackage build
  */
-function bld_policyFormatData($permissions) {
-    $data = array();
-    foreach ($permissions as $permission) {
-        $data[$permission->get('name')] = true;
-    }
-    return $data;
-}
-$policies = array();
-$policies[1]= $modx->newObject('modAccessPolicy');
-$policies[1]->fromArray(array (
-  'id' => 1,
-  'name' => 'File Attach',
-  'description' => 'A policy for editing attached files to resources.',
-  'parent' => 0,
-  'class' => '',
-  'lexicon' => 'fileattach:permissions',
-  'data' => '{"fileattach.totallist":true,"fileattach.doclist":true,"fileattach.download":true}',), '', true, true);
 
+$policies = array();
+
+$tmp = array(
+	'File Attach' => array(
+	    'description' => 'A policy for editing attached files to resources.',
+	    'data' => '{"fileattach.totallist":true,"fileattach.doclist":true,"fileattach.download":true,"fileattach.list":true,"fileattach.remove":true}'),
+	'File Attach Download' => array(
+	    'description' => 'A policy for downloading attached files to resources.',
+	    'data' => '{"fileattach.download":true}'),
+	'File Attach Frontend' => array(
+	    'description' => 'A policy for frontend uploading files to resources.',
+	    'data' => '{"fileattach.download":true,"fileattach.list":true,"fileattach.remove":true}')
+	);
+
+foreach ($tmp as $k => $v) {
+	/* @avr modplugin $plugin */
+	$policy = $modx->newObject('modAccessPolicy');
+
+	$policy->fromArray(array(
+		'name' => $k,
+		'parent' => 0,
+		'class' => '',
+		'lexicon' => PKG_NAME_LOWER . ':permissions',
+		'data' => @$v['data'],
+		'description' => @$v['description']
+	), '', true, true);
+
+	$policies[] = $policy;
+}
+
+unset($tmp, $template);
 return $policies;

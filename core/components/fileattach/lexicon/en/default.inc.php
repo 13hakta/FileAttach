@@ -7,6 +7,7 @@ $_lang['fileattach.rank'] = 'Rank';
 $_lang['fileattach.downloads'] = 'Downloads';
 $_lang['fileattach.items'] = 'Files';
 
+$_lang['fileattach.fid'] = 'File ID';
 $_lang['fileattach.hash'] = 'Checksum SHA1';
 $_lang['fileattach.size'] = 'Size';
 

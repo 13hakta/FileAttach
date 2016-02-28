@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -44,6 +44,8 @@ class FileItemCreateProcessor extends modObjectCreateProcessor {
 		$name = trim($this->getProperty('name'));
 		$name = $this->object->sanitizeName($name);
 		$this->setProperty('name', $name);
+
+		$this->setProperty('fid', $this->object->generateName());
 
 		if (empty($name)) {
 			$this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_name'));

@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -30,7 +30,7 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 	public $classKey = 'FileItem';
 	public $defaultSortField = 'id';
 	public $defaultSortDirection = 'DESC';
-	public $permission = 'list';
+	public $permission = 'fileattach.list';
 
 	/**
 	 * * We doing special check of permission
@@ -43,6 +43,11 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 			return $this->modx->lexicon('access_denied');
 		}
 
+		$docid = (int) $this->getProperty('docid');
+
+		if (!$docid)
+		    return $this->modx->lexicon('fileattach.item_err_ns');
+
 		return true;
 	}
 
@@ -54,31 +59,28 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 	 */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		$docid = (int) $this->getProperty('docid');
-		$uid = trim($this->getProperty('uid'));
 		$query = trim($this->getProperty('query'));
 
-		$c->select($this->modx->getSelectColumns('FileItem', 'FileItem'));
+		$c->select($this->modx->getSelectColumns('FileItem'));
 
 		if ($query)
 		 $c->where(array('name:LIKE' => "%$query%"));
 
-		if ($uid || ($docid == 0)) {
-		 $c->select('User.username');
-		 $c->leftJoin('modUser', 'User', 'User.id=FileItem.uid');
-		}
-
-		if ($uid)
-		 $c->where(array('User.username:LIKE' => "%$uid%"));
-
-		if ($docid > 0)
-		 $c->where(array('docid' => $docid));
-		else {
-		 $c->select('Res.pagetitle');
-		 $c->leftJoin('modResource', 'Res', 'Res.id=FileItem.docid');
-		}
+		$c->where(array('docid' => $docid));
 
 		return $c;
 	}
+
+    public function prepareRow(xPDOObject $object) {
+	$resArray = array(
+		'id' => $object->get('id'),
+		'fid' => $object->get('fid'),
+		'name' => $object->get('name'),
+		'hash' => $object->get('hash')
+	);
+
+        return $resArray;
+    }
 }
 
 return 'FileItemGetListProcessor';

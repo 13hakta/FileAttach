@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -22,15 +22,41 @@
  * @package FileAttach
 */
 
-class FileItemDownloadProcessor extends modObjectGetProcessor {
+class FileItemDownloadProcessor extends modObjectProcessor {
     public $objectType = 'FileItem';
     public $classKey = 'FileItem';
+    public $primaryKeyField = 'fid';
     public $languageTopics = array('fileattach:default');
     public $permission = 'fileattach.download';
 
-    public function cleanup() {
+    /**
+     * {@inheritDoc}
+     * @return boolean
+     */
+    public function initialize() {
+        $primaryKey = $this->getProperty($this->primaryKeyField, false);
+        if (empty($primaryKey)) return $this->modx->lexicon($this->objectType . '_err_ns');
+
+        $this->object = $this->modx->getObject($this->classKey, array($this->primaryKeyField => $primaryKey));
+        if (empty($this->object)) return $this->modx->lexicon($this->objectType . '_err_nfs', array($this->primaryKeyField => $primaryKey));
+        return parent::initialize();
+    }
+
+
+    /*
+     * {@inheritDoc}
+     * @return redirect or bytestream
+    */
+    public function process() {
+	// Count downloads if allowed by config
+	if ($this->modx->getOption('fileattach.download', null, true)) {
+	    $this->object->set('download', $this->object->get('download') + 1);
+	    $this->object->save();
+	}
+
         @session_write_close();
 
+        // If file is private then redirect else read file directly
 	if ($this->object->get('private')) {
 	    header("Content-Type: application/force-download");
     	    header("Content-Disposition: attachment; filename=\"" . $this->object->get('name') . "\"");
@@ -39,14 +65,6 @@ class FileItemDownloadProcessor extends modObjectGetProcessor {
 	    // In private mode redirect to file url
 	    $fileurl = $this->object->getUrl();
 	    header("Location: $fileurl", true, 302);
-	}
-    }
-
-    public function beforeOutput() {
-	// Count downloads if allowed by config
-	if ($this->modx->getOption('fileattach.download', null, true)) {
-	    $this->object->set('download', $this->object->get('download') + 1);
-	    $this->object->save();
 	}
     }
 }

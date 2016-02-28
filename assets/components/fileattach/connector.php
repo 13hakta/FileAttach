@@ -11,9 +11,9 @@ $FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOption('fi
 $modx->lexicon->load('fileattach:default');
 
 if ($modx->user->hasSessionContext($modx->context->get('key'))) {
- $_SERVER['HTTP_MODAUTH'] = $_SESSION["modx.{$modx->context->get('key')}.user.token"];
+    $_SERVER['HTTP_MODAUTH'] = $_SESSION["modx.{$modx->context->get('key')}.user.token"];
 } else {
- $_SERVER['HTTP_MODAUTH'] = 0;
+    $_SERVER['HTTP_MODAUTH'] = 0;
 }
 
 // handle request

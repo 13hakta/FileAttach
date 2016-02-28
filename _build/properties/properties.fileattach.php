@@ -43,9 +43,21 @@ $tmp = array(
 		'type' => 'combo-boolean',
 		'value' => false,
 	),
+	'showHASH' => array(
+		'type' => 'combo-boolean',
+		'value' => false,
+	),
 	'showSize' => array(
 		'type' => 'combo-boolean',
 		'value' => false,
+	),
+	'showExt' => array(
+		'type' => 'combo-boolean',
+		'value' => false,
+	),
+	'groups' => array(
+		'type' => 'textfield',
+		'value' => '',
 	),
 );
 

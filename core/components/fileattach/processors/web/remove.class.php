@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -23,13 +23,15 @@
 */
 
 /**
- * Set rank
+ * Remove an Items
  */
-class FileItemSetRankProcessor extends modObjectProcessor {
+class FileItemRemoveProcessor extends modObjectProcessor {
 	public $objectType = 'FileItem';
 	public $classKey = 'FileItem';
-	public $languageTopics = array('fileattach');
-	public $permission = 'save';
+	public $languageTopics = array('File');
+	public $permission = 'fileattach.remove';
+	public $permission2 = 'fileattach.totallist';
+
 
 	/**
 	 * @return array|string
@@ -38,24 +40,36 @@ class FileItemSetRankProcessor extends modObjectProcessor {
 		if (!$this->checkPermissions()) {
 			return $this->failure($this->modx->lexicon('access_denied'));
 		}
+		$adminmode = $this->modx->hasPermission($this->permission2);
 
-		$ranklist = $this->modx->fromJSON($this->getProperty('rank'));
-		if (empty($ranklist)) {
+		$docid = (int) $this->getProperty('docid');
+
+		if (!$docid)
+		    return $this->failure($this->modx->lexicon('fileattach.item_err_ns'));
+
+		$ids = $this->modx->fromJSON($this->getProperty('ids'));
+		if (empty($ids)) {
 			return $this->failure($this->modx->lexicon('fileattach.item_err_ns'));
 		}
 
-		foreach ($ranklist as $id => $value) {
-			/** @var FileItemItem $object */
+		foreach ($ids as $id) {
+			/** @var FileItem $object */
 			if (!$object = $this->modx->getObject($this->classKey, $id)) {
 				return $this->failure($this->modx->lexicon('fileattach.item_err_nf'));
 			}
 
-			$object->set('rank', $value);
-			$object->save();
+			// Forbid deletion for another resources
+			if ($object->get('docid') != $docid)
+				return $this->failure($this->modx->lexicon('fileattach.item_err_remove'));
+
+			// Allow remove only for admins and file owners
+			if ($adminmode || (($this->modx->user->get('id') == $object->get('uid'))))
+			    $object->remove(); else
+			    return $this->failure($this->modx->lexicon('fileattach.item_err_remove'));
 		}
 
 		return $this->success();
 	}
 }
 
-return 'FileItemSetRankProcessor';
+return 'FileItemRemoveProcessor';

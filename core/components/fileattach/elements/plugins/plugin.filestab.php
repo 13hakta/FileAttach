@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -23,34 +23,34 @@
 */
 
 switch ($modx->event->name) {
- // Add a custom tab to the MODX create/edit resource pages
- case 'OnDocFormPrerender':
+    // Add a custom tab to the MODX create/edit resource pages
+    case 'OnDocFormPrerender':
 
-  // Check access
-  if (!$modx->hasPermission('fileattach.doclist')) return;
+	// Check access
+	if (!$modx->hasPermission('fileattach.doclist')) return;
 
-  // Skip form building when resource template is not in permitted list
-  $templates = $modx->getOption('fileattach.templates');
+	// Skip form building when resource template is not in permitted list
+	$templates = $modx->getOption('fileattach.templates');
 
-  if ($templates != '') {
-   $templatelist = explode(',', $templates);
-   $template = is_object($resource)? $resource->get('template') : 0;
-   if (!in_array($template, $templatelist)) return;
-  }
+	if ($templates != '') {
+	    $templatelist = explode(',', $templates);
+	    $template = is_object($resource)? $resource->get('template') : 0;
+	    if (!in_array($template, $templatelist)) return;
+	}
 
-  $modx->controller->addLexiconTopic('fileattach:default');
+	$modx->controller->addLexiconTopic('fileattach:default');
 
-  $corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
-  require_once $corePath . 'model/fileattach/fileattach.class.php';
+	$corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
+	require_once $corePath . 'model/fileattach/fileattach.class.php';
 
-  $modx->FileAttach = new FileAttach($modx);
-  $modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
-  $modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
-  $modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/filestab.js');
+	$modx->FileAttach = new FileAttach($modx);
+	$modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
+	$modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
+	$modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/filestab.js');
 
-  $modx->regClientStartupHTMLBlock('<script type="text/javascript">
+	$modx->regClientStartupHTMLBlock('<script type="text/javascript">
 	 FileAttach.config = ' . $modx->toJSON($modx->FileAttach->config) . ';
 	 FileAttach.config.connector_url = "' . $modx->FileAttach->config['connectorUrl'] . '";
 	</script>');
-  break;
+	break;
 }

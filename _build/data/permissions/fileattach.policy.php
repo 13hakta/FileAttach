@@ -25,4 +25,16 @@ $permissions[] = $modx->newObject('modAccessPermission',array(
     'value' => true,
 ));
 
+$permissions[] = $modx->newObject('modAccessPermission',array(
+    'name' => 'fileattach.list',
+    'description' => 'perm.fileattach_list',
+    'value' => true,
+));
+
+$permissions[] = $modx->newObject('modAccessPermission',array(
+    'name' => 'fileattach.remove',
+    'description' => 'perm.fileattach_remove',
+    'value' => true,
+));
+
 return $permissions;

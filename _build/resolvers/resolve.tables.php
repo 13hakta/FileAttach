@@ -4,12 +4,12 @@ if ($object->xpdo) {
 	/** @var modX $modx */
 	$modx =& $object->xpdo;
 
+	$modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/';
+	$modx->addPackage('fileattach', $modelPath);
+	$manager = $modx->getManager();
+
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		case xPDOTransport::ACTION_INSTALL:
-			$modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/';
-			$modx->addPackage('fileattach', $modelPath);
-
-			$manager = $modx->getManager();
 			$objects = array(
 				'FileItem', 'FileAttachMediaSource'
 			);
@@ -20,23 +20,46 @@ if ($object->xpdo) {
 
 		case xPDOTransport::ACTION_UPGRADE:
 			// Upgrade DB scheme if there were older packages installed
-			$package = $modx->getObject('modTransportPackage', array(
-			    'package_name' => 'FileAttach',
-			    'version_major' => '1',
-			    'version_minor' => '0',
-			    'version_patch:<' => '2'));
+			// Find latest installed version
 
+			$c = $modx->newQuery('modTransportPackage');
+			$c->select(array('version_major', 'version_minor', 'version_patch'));
+			$c->where(array(
+			    'package_name' => 'FileAttach',
+		    	    'installed:IS NOT' => NULL
+			));
+			$c->sortby('version_major', 'DESC');
+			$c->sortby('version_minor', 'DESC');
+			$c->sortby('version_patch', 'DESC');
+
+			$package = $modx->getObject('modTransportPackage', $c);
 			if ($package) {
         		    $oldLogLevel = $modx->getLogLevel();
         		    $modx->setLogLevel(0);
 
-			    $modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/';
-			    $modx->addPackage('fileattach', $modelPath);
+			    $version =
+				$package->get('version_major') * 1000 +
+				$package->get('version_minor') * 100 +
+				$package->get('version_patch');
 
-			    $manager = $modx->getManager();
-        		    $manager->addField('FileItem', 'rank');
+			    // Update tables
+			    if ($version < 1002) {
+        			$manager->addField('FileItem', 'rank', array('after' => 'uid'));
+			    }
+
+			    if ($version < 1007) {
+        			$manager->addField('FileItem', 'fid', array('after' => 'id'));
+        			$manager->addIndex('FileItem', 'fid');
+			    }
 
         		    $modx->setLogLevel($oldLogLevel);
+			}
+
+			// Find old records with empty file ID
+			$needID = $modx->getCollection('FileItem', array('fid' => ''));
+    			foreach ($needID as $item) {
+			    $item->set('fid', $item->generateName());
+			    $item->save();
 			}
 
 			break;
