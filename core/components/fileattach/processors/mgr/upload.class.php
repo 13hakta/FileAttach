@@ -152,7 +152,7 @@ class modFileAttachUploadProcessor extends modProcessor {
 	  $fileitem->set('hash', sha1_file($fullpath));
 
          if (!$fileitem->save()) {
-            return $this->failure($this->modx->lexicon('item_err_save'));
+            return $this->failure($this->modx->lexicon('fileattach.item_err_save'));
          }
 
 	 $list[] = array(
