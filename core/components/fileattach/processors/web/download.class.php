@@ -28,17 +28,18 @@ class FileItemDownloadProcessor extends modObjectProcessor {
     public $primaryKeyField = 'fid';
     public $languageTopics = array('fileattach:default');
     public $permission = 'fileattach.download';
+    private $primaryKey;
 
     /**
      * {@inheritDoc}
      * @return boolean
      */
     public function initialize() {
-        $primaryKey = $this->getProperty($this->primaryKeyField, false);
-        if (empty($primaryKey)) return $this->modx->lexicon($this->objectType . '_err_ns');
+        $this->primaryKey = $this->getProperty($this->primaryKeyField, false);
+        if (empty($this->primaryKey)) return $this->modx->lexicon('fileattach.item_err_ns');
 
-        $this->object = $this->modx->getObject($this->classKey, array($this->primaryKeyField => $primaryKey));
-        if (empty($this->object)) return $this->modx->lexicon($this->objectType . '_err_nfs', array($this->primaryKeyField => $primaryKey));
+        $this->object = $this->modx->getObject($this->classKey, array($this->primaryKeyField => $this->primaryKey));
+        if (empty($this->object)) return $this->modx->lexicon('fileattach.item_err_nfs', array($this->primaryKeyField => $this->primaryKey));
         return parent::initialize();
     }
 
@@ -50,8 +51,16 @@ class FileItemDownloadProcessor extends modObjectProcessor {
     public function process() {
 	// Count downloads if allowed by config
 	if ($this->modx->getOption('fileattach.download', null, true)) {
-	    $this->object->set('download', $this->object->get('download') + 1);
-	    $this->object->save();
+	    $c = $this->modx->newQuery($this->classKey);
+	    $c->command('update');
+	    $c->set(array(
+	        'download' => $this->object->get('download') + 1
+	    ));
+	    $c->where(array(
+	        'fid' => $this->primaryKey,
+	    ));
+	    $c->prepare();
+	    $c->stmt->execute();
 	}
 
         @session_write_close();

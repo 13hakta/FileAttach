@@ -53,4 +53,25 @@ switch ($modx->event->name) {
 	 FileAttach.config.connector_url = "' . $modx->FileAttach->config['connectorUrl'] . '";
 	</script>');
 	break;
+
+    // Remove attached files to resources
+    case 'OnEmptyTrash':
+	// Load service
+	if (!$FileAttach = $modx->getService('fileattach', 'FileAttach',
+	    $modx->getOption('fileattach.core_path',
+		null,
+		$modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/')) {
+	    $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not load FileAttach class OnEmptyTrash!');
+	    return;
+	}
+
+	foreach ($ids as &$id) {
+	    $c = $modx->newQuery('FileItem');
+	    $c->where(array('docid' => $id));
+
+	    $iter = $modx->getIterator('FileItem', $c);
+	    foreach ($iter as $item) $item->remove();
+	}
+
+	break;
 }

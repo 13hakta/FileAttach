@@ -7,7 +7,8 @@ $tmp = array(
 		'file' => 'filestab',
 		'description' => '',
 		'events' => array(
-			'OnDocFormPrerender' => array()
+			'OnDocFormPrerender' => array(),
+			'OnEmptyTrash' => array()
 		)
 	)
 );
