@@ -53,3 +53,8 @@ Changelog for FileAttach.
 - Now files are available by unique string file ID
 - Add ability to restrict link list access with groups
 - Automatically open picker after upload button is clicked
+
+1.0.7 pl1
+==============
+- Add file cleanup on resource removal
+- Optimize download processor performance
