@@ -10,7 +10,6 @@ Ext.onReady(function () {
    width: "95%",
    items: [{
 	xtype: 'fileattach-grid-items',
-	cls: 'main-wrapper',
 	width: "95%"
    }]
    });

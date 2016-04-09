@@ -19,8 +19,8 @@ FileAttach.panel.Home = function (config) {
 		style: {padding: '20px 15px'},
 		items: [{
 			html: '<h2>' + _('fileattach') + '</h2>',
-			cls: '',
-			style: {margin: '15px 0'}
+        		cls: 'modx-page-header',
+        		border: false,
 		}, {
 				layout: 'anchor',
 				items: [{
