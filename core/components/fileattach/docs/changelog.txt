@@ -1,8 +1,50 @@
 Changelog for FileAttach.
 
-1.0.0
+1.0.7 pl1
 ==============
-- Initial release
+- Add file cleanup on resource removal
+- Optimize download processor performance
+
+1.0.7
+==============
+- Now files are available by unique string file ID
+- Add ability to restrict link list access with groups
+- Automatically open picker after upload button is clicked
+
+1.0.6
+==============
+- Add frontend processors
+- Add new policy for frontend uploader
+- Following system upload file type list
+- Don't double save on update
+
+1.0.5 pl1
+==============
+- Add ability to use extension placeholder
+
+1.0.5
+==============
+- Add ability to allow anonymous download
+- Fix snippet arguments typo
+
+1.0.4
+==============
+- DB scheme enhance
+- Add SQLSrv support
+
+1.0.3
+==============
+- Add compatibility with MODx v2.2
+- Snippet fix config loading
+- Enhance media source:
+    - Extension distinction
+    - Display thumbnails
+
+1.0.2
+==============
+- Add download option
+- Add rank field in model
+- Add ability to manually rearrange order
 
 1.0.1
 ==============
@@ -13,48 +55,6 @@ Changelog for FileAttach.
 - Add filter for templates in document lister
 - UI editor rearrange
 
-1.0.2
+1.0.0
 ==============
-- Add download option
-- Add rank field in model
-- Add ability to manually rearrange order
-
-1.0.3
-==============
-- Add compatibility with MODx v2.2
-- Snippet fix config loading
-- Enhance media source:
-    - Extension distinction
-    - Display thumbnails
-
-1.0.4
-==============
-- DB scheme enhance
-- Add SQLSrv support
-
-1.0.5
-==============
-- Add ability to allow anonymous download
-- Fix snippet arguments typo
-
-1.0.5 pl1
-==============
-- Add ability to use extension placeholder
-
-1.0.6
-==============
-- Add frontend processors
-- Add new policy for frontend uploader
-- Following system upload file type list
-- Don't double save on update
-
-1.0.7
-==============
-- Now files are available by unique string file ID
-- Add ability to restrict link list access with groups
-- Automatically open picker after upload button is clicked
-
-1.0.7 pl1
-==============
-- Add file cleanup on resource removal
-- Optimize download processor performance
+- Initial release

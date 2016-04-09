@@ -16,6 +16,7 @@ FileAttach.panel.Home = function (config) {
 		baseCls: 'modx-formpanel',
 		layout: 'anchor',
 		hideMode: 'offsets',
+		style: {padding: '20px 15px'},
 		items: [{
 			html: '<h2>' + _('fileattach') + '</h2>',
 			cls: '',
