@@ -43,9 +43,8 @@ foreach ($tmp as $k => $v) {
 		unset($v['events']);
 	}
 
-	if (!empty($events)) {
+	if (!empty($events))
 		$plugin->addMany($events);
-	}
 
 	$plugins[] = $plugin;
 }

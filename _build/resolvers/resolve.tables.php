@@ -25,8 +25,8 @@ if ($object->xpdo) {
 			$c = $modx->newQuery('modTransportPackage');
 			$c->select(array('version_major', 'version_minor', 'version_patch'));
 			$c->where(array(
-			    'package_name' => 'FileAttach',
-		    	    'installed:IS NOT' => NULL
+				'package_name' => 'FileAttach',
+					'installed:IS NOT' => NULL
 			));
 			$c->sortby('version_major', 'DESC');
 			$c->sortby('version_minor', 'DESC');
@@ -34,32 +34,31 @@ if ($object->xpdo) {
 
 			$package = $modx->getObject('modTransportPackage', $c);
 			if ($package) {
-        		    $oldLogLevel = $modx->getLogLevel();
-        		    $modx->setLogLevel(0);
+					$oldLogLevel = $modx->getLogLevel();
+					$modx->setLogLevel(0);
 
-			    $version =
-				$package->get('version_major') * 1000 +
-				$package->get('version_minor') * 100 +
-				$package->get('version_patch');
+					$version =
+					$package->get('version_major') * 1000 +
+					$package->get('version_minor') * 100 +
+					$package->get('version_patch');
 
-			    // Update tables
-			    if ($version < 1002) {
-        			$manager->addField('FileItem', 'rank', array('after' => 'uid'));
-			    }
+					// Update tables
+					if ($version < 1002)
+						$manager->addField('FileItem', 'rank', array('after' => 'uid'));
 
-			    if ($version < 1007) {
-        			$manager->addField('FileItem', 'fid', array('after' => 'id'));
-        			$manager->addIndex('FileItem', 'fid');
-			    }
+					if ($version < 1007) {
+						$manager->addField('FileItem', 'fid', array('after' => 'id'));
+						$manager->addIndex('FileItem', 'fid');
+					}
 
-        		    $modx->setLogLevel($oldLogLevel);
+					$modx->setLogLevel($oldLogLevel);
 			}
 
 			// Find old records with empty file ID
 			$needID = $modx->getCollection('FileItem', array('fid' => ''));
-    			foreach ($needID as $item) {
-			    $item->set('fid', $item->generateName());
-			    $item->save();
+			foreach ($needID as $item) {
+				$item->set('fid', $item->generateName());
+				$item->save();
 			}
 
 			break;
@@ -68,4 +67,5 @@ if ($object->xpdo) {
 			break;
 	}
 }
+
 return true;

@@ -25,41 +25,37 @@
 $success = false;
 
 if ($object->xpdo) {
-switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-    case xPDOTransport::ACTION_UPGRADE:
-        if (!isset($options['install_pack'])) {
-    	    $modx =& $object->xpdo;
-    	    if ($modx instanceof modX) {
-        	$modx->removeExtensionPackage('fileattach');
-    	    }
+	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+		case xPDOTransport::ACTION_UPGRADE:
+			if (!isset($options['install_pack'])) {
+				$modx =& $object->xpdo;
+				if ($modx instanceof modX)
+					$modx->removeExtensionPackage('fileattach');
+			}
+
+		case xPDOTransport::ACTION_INSTALL:
+			if (isset($options['install_pack'])) {
+				/** @var modX $modx */
+				$modx =& $object->xpdo;
+				$modelPath = $modx->getOption('fileattach.core_path');
+				if (empty($modelPath))
+					$modelPath = '[[++core_path]]components/fileattach/';
+
+				$modelPath = rtrim($modelPath, '/') . '/model/';
+				if ($modx instanceof modX)
+					$modx->addExtensionPackage('fileattach', $modelPath);
+			}
+
+			$success = true;
+			break;
+		case xPDOTransport::ACTION_UNINSTALL:
+			$modx =& $object->xpdo;
+			if ($modx instanceof modX)
+				$modx->removeExtensionPackage('fileattach');
+
+			$success = true;
+			break;
 	}
-
-    case xPDOTransport::ACTION_INSTALL:
-        if (isset($options['install_pack'])) {
-            /** @var modX $modx */
-            $modx =& $object->xpdo;
-            $modelPath = $modx->getOption('fileattach.core_path');
-            if (empty($modelPath)) {
-                $modelPath = '[[++core_path]]components/fileattach/';
-            }
-
-            $modelPath = rtrim($modelPath, '/') . '/model/';
-            if ($modx instanceof modX) {
-                $modx->addExtensionPackage('fileattach', $modelPath);
-            }
-        }
-
-        $success = true;
-        break;
-    case xPDOTransport::ACTION_UNINSTALL:
-        $modx =& $object->xpdo;
-        if ($modx instanceof modX) {
-            $modx->removeExtensionPackage('fileattach');
-        }
-
-	$success = true;
-        break;
- }
 }
 
 return $success;

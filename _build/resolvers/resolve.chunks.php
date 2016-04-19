@@ -24,4 +24,5 @@ if ($object->xpdo) {
 			break;
 	}
 }
+
 return true;
