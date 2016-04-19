@@ -39,9 +39,8 @@ class FileItemGetProcessor extends modObjectGetProcessor {
 	 * @return mixed
 	 */
 	public function process() {
-		if (!$this->checkPermissions()) {
+		if (!$this->checkPermissions())
 			return $this->failure($this->modx->lexicon('access_denied'));
-		}
 
 		return parent::process();
 	}

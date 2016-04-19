@@ -29,6 +29,7 @@ abstract class FileAttachMainController extends modExtraManagerController {
 	/** @var FileAttach $FileAttach */
 	public $FileAttach;
 
+
 	/**
 	 * @return void
 	 */
@@ -38,12 +39,9 @@ abstract class FileAttachMainController extends modExtraManagerController {
 
 		$this->FileAttach = new FileAttach($this->modx);
 		$this->addJavascript($this->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
-		$this->addHtml('
-		<script type="text/javascript">
+		$this->addHtml('<script type="text/javascript">
 			FileAttach.config = ' . $this->modx->toJSON($this->FileAttach->config) . ';
-			FileAttach.config.connector_url = "' . $this->FileAttach->config['connectorUrl'] . '";
-		</script>
-		');
+		</script>');
 
 		parent::initialize();
 	}
@@ -70,11 +68,10 @@ abstract class FileAttachMainController extends modExtraManagerController {
  * Class IndexManagerController
  */
 class IndexManagerController extends FileAttachMainController {
-
-/**
- * @return string
- */
- public static function getDefaultController() {
-  return 'home';
- }
+	/**
+	 * @return string
+	 */
+	public static function getDefaultController() {
+		return 'home';
+	}
 }

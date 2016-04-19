@@ -1,5 +1,11 @@
 Changelog for FileAttach.
 
+1.0.8
+==============
+- Fix margins in panels
+- Optimize plugin
+- Code cleanup and reformat
+
 1.0.7 pl1
 ==============
 - Add file cleanup on resource removal

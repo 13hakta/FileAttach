@@ -25,7 +25,7 @@
 /** @var array $scriptProperties */
 /** @var FileAttach $FileAttach */
 if (!$FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/', $scriptProperties)) {
-    return 'Could not load FileAttach class!';
+	return 'Could not load FileAttach class!';
 }
 
 // Do your snippet code here.
@@ -45,34 +45,34 @@ $groups = $modx->getOption('groups', $scriptProperties, '');
 
 // Check access
 if ($groups != '') {
-    // Forbid access for non-authorized visitor
-    if (empty($modx->user)) return;
+	// Forbid access for non-authorized visitor
+	if (empty($modx->user)) return;
 
-    $accessGroups = explode(',', $groups);
+	$accessGroups = explode(',', $groups);
 
-    // Argument set erroneously
-    if (empty($accessGroups)) return;
+	// Argument set erroneously
+	if (empty($accessGroups)) return;
 
-    $accessGroups = array_map('trim', $accessGroups);
+	$accessGroups = array_map('trim', $accessGroups);
 
-    if (!$modx->user->isMember($accessGroups)) return;
+	if (!$modx->user->isMember($accessGroups)) return;
 }
 
 if ($makeUrl) {
-    if (!$privateUrl || $showSize) {
-	// Get base URLs
-	$mediaSource = $modx->getOption('fileattach.mediasource',null,1);
+	if (!$privateUrl || $showSize) {
+		// Get base URLs
+		$mediaSource = $modx->getOption('fileattach.mediasource',null,1);
 
-	$ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
-	$ms->initialize();
+		$ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
+		$ms->initialize();
 
-	$files_path = $modx->getOption('fileattach.files_path');
-	$public_url = $ms->getBaseUrl() . $files_path;
-	$docs_path  = $ms->getBasePath() . $files_path;
-    }
+		$files_path = $modx->getOption('fileattach.files_path');
+		$public_url = $ms->getBaseUrl() . $files_path;
+		$docs_path  = $ms->getBasePath() . $files_path;
+	}
 
-    $private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
-    $private_url .= 'connector.php?action=web/download&ctx=web&fid=';
+	$private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
+	$private_url .= 'connector.php?action=web/download&ctx=web&fid=';
 }
 
 // Build query
@@ -81,9 +81,9 @@ $c->sortby($sortby, $sortdir);
 $c->limit($limit);
 
 if ($showHASH)
-    $c->select($modx->getSelectColumns('FileItem', 'FileItem'));
+	$c->select($modx->getSelectColumns('FileItem', 'FileItem'));
 else
-    $c->select($modx->getSelectColumns('FileItem', 'FileItem', '', array('hash'), true));
+	$c->select($modx->getSelectColumns('FileItem', 'FileItem', '', array('hash'), true));
 
 $c->where(array('docid' => ($resource > 0)? $resource : $modx->resource->get('id')));
 
@@ -93,36 +93,36 @@ $items = $modx->getIterator('FileItem', $c);
 $list = array();
 /** @var FileItem $item */
 foreach ($items as $item) {
-    $item->source = $ms;
-    $item->files_path = $files_path;
+	$item->source = $ms;
+	$item->files_path = $files_path;
 
-    $itemArr = $item->toArray();
+	$itemArr = $item->toArray();
 
-    if ($makeUrl) {
-	if ($itemArr['private'] || $privateUrl)
-	    $itemArr['url'] = $private_url . $itemArr['fid'];
-	else
-	    $itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['name'];
-    }
+	if ($makeUrl) {
+		if ($itemArr['private'] || $privateUrl)
+			$itemArr['url'] = $private_url . $itemArr['fid'];
+		else
+			$itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['name'];
+	}
 
-    if ($showSize)
-	$itemArr['size'] = $item->getSize();
+	if ($showSize)
+		$itemArr['size'] = $item->getSize();
 
-    if ($showExt) {
-	$itemArr['ext'] = strtolower(
-	    pathinfo($itemArr['name'], PATHINFO_EXTENSION));
-    }
+	if ($showExt) {
+		$itemArr['ext'] = strtolower(
+			pathinfo($itemArr['name'], PATHINFO_EXTENSION));
+		}
 
-    $list[] = $modx->getChunk($tpl, $itemArr);
+	$list[] = $modx->getChunk($tpl, $itemArr);
 }
 
 // Output
 $output = implode($outputSeparator, $list);
 if (!empty($toPlaceholder)) {
-    // If using a placeholder, output nothing and set output to specified placeholder
-    $modx->setPlaceholder($toPlaceholder, $output);
+	// If using a placeholder, output nothing and set output to specified placeholder
+	$modx->setPlaceholder($toPlaceholder, $output);
 
-    return '';
+	return '';
 }
 
 return $output;

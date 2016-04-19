@@ -23,55 +23,52 @@
 */
 
 switch ($modx->event->name) {
-    // Add a custom tab to the MODX create/edit resource pages
-    case 'OnDocFormPrerender':
+	// Add a custom tab to the MODX create/edit resource pages
+	case 'OnDocFormPrerender':
 
-	// Check access
-	if (!$modx->hasPermission('fileattach.doclist')) return;
+		// Check access
+		if (!$modx->hasPermission('fileattach.doclist')) return;
 
-	// Skip form building when resource template is not in permitted list
-	$templates = $modx->getOption('fileattach.templates');
+		// Skip form building when resource template is not in permitted list
+		$templates = $modx->getOption('fileattach.templates');
 
-	if ($templates != '') {
-	    $templatelist = explode(',', $templates);
-	    $template = is_object($resource)? $resource->get('template') : 0;
-	    if (!in_array($template, $templatelist)) return;
-	}
+		if ($templates != '') {
+			$templatelist = explode(',', $templates);
+			$template = is_object($resource)? $resource->get('template') : 0;
+			if (!in_array($template, $templatelist)) return;
+		}
 
-	$modx->controller->addLexiconTopic('fileattach:default');
+		$modx->controller->addLexiconTopic('fileattach:default');
 
-	$corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
-	require_once $corePath . 'model/fileattach/fileattach.class.php';
+		$corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
+		require_once $corePath . 'model/fileattach/fileattach.class.php';
 
-	$modx->FileAttach = new FileAttach($modx);
-	$modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
-	$modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
-	$modx->regClientStartupScript($modx->FileAttach->config['jsUrl'] . 'mgr/filestab.js');
+		$modx->FileAttach = new FileAttach($modx);
+		$modx->controller->addJavascript($modx->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
+		$modx->controller->addJavascript($modx->FileAttach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
+		$modx->controller->addLastJavascript($modx->FileAttach->config['jsUrl'] . 'mgr/filestab.js');
+		$modx->controller->addHtml('<script type="text/javascript">FileAttach.config = ' . $modx->toJSON($modx->FileAttach->config) . ';</script>');
 
-	$modx->regClientStartupHTMLBlock('<script type="text/javascript">
-	 FileAttach.config = ' . $modx->toJSON($modx->FileAttach->config) . ';
-	 FileAttach.config.connector_url = "' . $modx->FileAttach->config['connectorUrl'] . '";
-	</script>');
-	break;
+		break;
 
-    // Remove attached files to resources
-    case 'OnEmptyTrash':
-	// Load service
-	if (!$FileAttach = $modx->getService('fileattach', 'FileAttach',
-	    $modx->getOption('fileattach.core_path',
-		null,
-		$modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/')) {
-	    $modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not load FileAttach class OnEmptyTrash!');
-	    return;
-	}
+	// Remove attached files to resources
+	case 'OnEmptyTrash':
+		// Load service
+		if (!$FileAttach = $modx->getService('fileattach', 'FileAttach',
+			$modx->getOption('fileattach.core_path',
+			null,
+			$modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/')) {
+			$modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not load FileAttach class OnEmptyTrash!');
+			return;
+		}
 
-	foreach ($ids as &$id) {
-	    $c = $modx->newQuery('FileItem');
-	    $c->where(array('docid' => $id));
+		foreach ($ids as &$id) {
+			$c = $modx->newQuery('FileItem');
+			$c->where(array('docid' => $id));
 
-	    $iter = $modx->getIterator('FileItem', $c);
-	    foreach ($iter as $item) $item->remove();
-	}
+			$iter = $modx->getIterator('FileItem', $c);
+			foreach ($iter as $item) $item->remove();
+		}
 
-	break;
+		break;
 }

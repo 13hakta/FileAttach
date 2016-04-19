@@ -39,9 +39,8 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 	 * @return boolean|string
 	 */
 	public function beforeQuery() {
-		if (!$this->checkPermissions()) {
+		if (!$this->checkPermissions())
 			return $this->modx->lexicon('access_denied');
-		}
 
 		return true;
 	}
@@ -60,21 +59,21 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 		$c->select($this->modx->getSelectColumns('FileItem', 'FileItem'));
 
 		if ($query)
-		 $c->where(array('name:LIKE' => "%$query%"));
+			$c->where(array('name:LIKE' => "%$query%"));
 
 		if ($uid || ($docid == 0)) {
-		 $c->select('User.username');
-		 $c->leftJoin('modUser', 'User', 'User.id=FileItem.uid');
+			$c->select('User.username');
+			$c->leftJoin('modUser', 'User', 'User.id=FileItem.uid');
 		}
 
 		if ($uid)
-		 $c->where(array('User.username:LIKE' => "%$uid%"));
+			$c->where(array('User.username:LIKE' => "%$uid%"));
 
 		if ($docid > 0)
-		 $c->where(array('docid' => $docid));
+			$c->where(array('docid' => $docid));
 		else {
-		 $c->select('Res.pagetitle');
-		 $c->leftJoin('modResource', 'Res', 'Res.id=FileItem.docid');
+			$c->select('Res.pagetitle');
+			$c->leftJoin('modResource', 'Res', 'Res.id=FileItem.docid');
 		}
 
 		return $c;

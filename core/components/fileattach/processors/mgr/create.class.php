@@ -37,9 +37,8 @@ class FileItemCreateProcessor extends modObjectCreateProcessor {
 	public function beforeSet() {
 		$docid = (int) $this->getProperty('docid');
 
-		if (!$docid) {
+		if (!$docid)
 			$this->modx->error->addField('docid', $this->modx->lexicon('notset'));
-		}
 
 		$name = trim($this->getProperty('name'));
 		$name = $this->object->sanitizeName($name);
@@ -47,9 +46,8 @@ class FileItemCreateProcessor extends modObjectCreateProcessor {
 
 		$this->setProperty('fid', $this->object->generateName());
 
-		if (empty($name)) {
+		if (empty($name))
 			$this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_name'));
-		}
 
 		return parent::beforeSet();
 	}

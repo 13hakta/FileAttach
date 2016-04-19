@@ -39,9 +39,8 @@ class FileItemUpdateProcessor extends modObjectUpdateProcessor {
 	 * @return bool|string
 	 */
 	public function beforeSave() {
-		if (!$this->checkPermissions()) {
+		if (!$this->checkPermissions())
 			return $this->modx->lexicon('access_denied');
-		}
 
 		return true;
 	}
@@ -54,35 +53,32 @@ class FileItemUpdateProcessor extends modObjectUpdateProcessor {
 		$id = (int)$this->getProperty('id');
 		$docid = (int)$this->getProperty('docid');
 
-		if (empty($id)) {
-		    return $this->modx->lexicon('fileattach.item_err_ns');
-		}
+		if (empty($id))
+			return $this->modx->lexicon('fileattach.item_err_ns');
 
-		if (!$docid) {
-		    $this->modx->error->addField('docid', $this->modx->lexicon('notset'));
-		}
+		if (!$docid)
+			$this->modx->error->addField('docid', $this->modx->lexicon('notset'));
 
 		$private = ($this->getProperty('private'))? true : false;
 
 		// Allow filename change only in private mode. May be changed further
 		$name = trim($this->getProperty('name'));
 		$name = $this->object->sanitizeName($name);
-		if (empty($name)) {
-		    $this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_name'));
-		}
+		if (empty($name))
+			$this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_name'));
 
 		// If file is open we should rename file, otherwize just change field value
 		if (!$this->object->get('private')) {
-		    $this->unsetProperty('name');
+			$this->unsetProperty('name');
 
-		    // Rename if name changed
-		    if ($name != $this->object->get('name'))
-			if (!$this->object->rename($name))
-			    $this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_nr'));
+			// Rename if name changed
+			if ($name != $this->object->get('name'))
+				if (!$this->object->rename($name))
+					$this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_nr'));
 		}
 
 		if (!$this->object->setPrivate($private))
-			    $this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_nr'));
+			$this->modx->error->addField('name', $this->modx->lexicon('fileattach.item_err_nr'));
 
 		return parent::beforeSet();
 	}

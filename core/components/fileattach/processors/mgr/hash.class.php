@@ -32,12 +32,12 @@ class FileItemCalcHashProcessor extends modObjectGetProcessor {
 	public $permission = 'save';
 
 	public function cleanup() {
-	    $hash = sha1($this->object->getFullPath());
+		$hash = sha1($this->object->getFullPath());
 
-	    $this->object->set('hash', $hash);
-	    $this->object->save();
+		$this->object->set('hash', $hash);
+		$this->object->save();
 
-    	    return $this->success('', array('hash' => $hash));
+		return $this->success('', array('hash' => $hash));
 	}
 }
 

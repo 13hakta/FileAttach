@@ -34,8 +34,7 @@ class FileAttachHomeManagerController extends FileAttachMainController {
 	/**
 	 * @param array $scriptProperties
 	 */
-	public function process(array $scriptProperties = array()) {
-	}
+	public function process(array $scriptProperties = array()) {}
 
 
 	/**

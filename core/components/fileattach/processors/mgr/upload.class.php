@@ -28,159 +28,159 @@
  * @param string $docid resource ID
  */
 class modFileAttachUploadProcessor extends modProcessor {
-    /** @var modMediaSource $source */
-    private $source;
-    private $privatemode;
-    private $filename;
-    public $path;
-    private $localpath;
+	/** @var modMediaSource $source */
+	private $source;
+	private $privatemode;
+	private $filename;
+	public $path;
+	private $localpath;
 
-    private $calc_hash;
-    private $user_folders;
-    private $doc_folders;
+	private $calc_hash;
+	private $user_folders;
+	private $doc_folders;
 
-    public function checkPermissions() {
-        return $this->modx->hasPermission('file_upload');
-    }
+	public function checkPermissions() {
+		return $this->modx->hasPermission('file_upload');
+	}
 
-    public function getLanguageTopics() {
-        return array('file');
-    }
+	public function getLanguageTopics() {
+		return array('file');
+	}
 
-    public function initialize() {
-	$this->calc_hash = $this->modx->getOption('fileattach.calchash');
-	$this->user_folders = $this->modx->getOption('fileattach.user_folders');
-	$this->doc_folders = $this->modx->getOption('fileattach.put_docid');
-	$this->path = $this->modx->getOption('fileattach.files_path');
-	$this->privatemode = $this->modx->getOption('fileattach.private');
+	public function initialize() {
+		$this->calc_hash = $this->modx->getOption('fileattach.calchash');
+		$this->user_folders = $this->modx->getOption('fileattach.user_folders');
+		$this->doc_folders = $this->modx->getOption('fileattach.put_docid');
+		$this->path = $this->modx->getOption('fileattach.files_path');
+		$this->privatemode = $this->modx->getOption('fileattach.private');
 
-        $this->setDefaultProperties(array('docid' => 0));
+		$this->setDefaultProperties(array('docid' => 0));
 
-	$this->localpath = '';
+		$this->localpath = '';
 
-	if ($this->user_folders)
-	    $this->localpath .= (int) $this->modx->user->get('id') . '/';
+		if ($this->user_folders)
+			$this->localpath .= (int) $this->modx->user->get('id') . '/';
 
-	if ($this->doc_folders)
-	    $this->localpath .=  (int) $this->getProperty('docid') . '/';
+		if ($this->doc_folders)
+			$this->localpath .=  (int) $this->getProperty('docid') . '/';
 
-	$this->setProperty('path', $this->path . $this->localpath);
-        $this->setProperty('source', $this->modx->getOption('fileattach.mediasource'));
+		$this->setProperty('path', $this->path . $this->localpath);
+		$this->setProperty('source', $this->modx->getOption('fileattach.mediasource'));
 
-        if (!$this->getProperty('path')) return $this->modx->lexicon('file_folder_err_ns');
+		if (!$this->getProperty('path')) return $this->modx->lexicon('file_folder_err_ns');
 
-        return true;
-    }
+		return true;
+	}
 
-    public function process() {
-        if (!$this->getSource()) {
-            return $this->failure($this->modx->lexicon('permission_denied'));
-        }
-        $this->source->setRequestProperties($this->getProperties());
-        $this->source->initialize();
-        if (!$this->source->checkPolicy('create')) {
-            return $this->failure($this->modx->lexicon('permission_denied'));
-        }
+	public function process() {
+		if (!$this->getSource())
+			return $this->failure($this->modx->lexicon('permission_denied'));
 
-	// Create subfolder
-	if ($this->user_folders || $this->doc_folders) {
-	 $path = $this->source->getBasePath() . $this->getProperty('path');
-	 $d = $this->source->fileHandler->make($path, array(), 'modDirectory');
-	 if (!$d->exists()) {
-	    if (!$this->source->createContainer($this->getProperty('path'), ''))
-        	return $this->failure($this->modx->lexicon('permission_denied'));
-	 }
+		$this->source->setRequestProperties($this->getProperties());
+		$this->source->initialize();
+
+		if (!$this->source->checkPolicy('create'))
+			return $this->failure($this->modx->lexicon('permission_denied'));
+
+		// Create subfolder
+		if ($this->user_folders || $this->doc_folders) {
+			$path = $this->source->getBasePath() . $this->getProperty('path');
+			$d = $this->source->fileHandler->make($path, array(), 'modDirectory');
+
+			if (!$d->exists()) {
+				if (!$this->source->createContainer($this->getProperty('path'), ''))
+					return $this->failure($this->modx->lexicon('permission_denied'));
+			}
 	}
 
 	$path = $this->source->getBasePath() . $this->getProperty('path');
 	$list = array();
 
-        // Create serie of FileItem objects
+	// Create serie of FileItem objects
 	foreach ($_FILES as $file) {
-	 $fileitem = $this->modx->newObject('FileItem');
+		$fileitem = $this->modx->newObject('FileItem');
 
-         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-         $ext = strtolower($ext);
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+		$ext = strtolower($ext);
 
-	 // Generate name and check for existence
-	 if ($this->privatemode)
-	  $this->filename = $fileitem->generateName() . ".$ext";
-	 else
-	  $this->filename = $file['name'];
+		// Generate name and check for existence
+		if ($this->privatemode)
+			$this->filename = $fileitem->generateName() . ".$ext";
+		else
+			$this->filename = $file['name'];
 
-	 $fullpath = '';
+		$fullpath = '';
 
-	 while(1) {
-	  $fullpath = $path . '/' . $this->filename;
-	  $f = $this->source->fileHandler->make($fullpath, array(), 'modFile');
-	  if (!$f->exists()) break;
+		while(1) {
+			$fullpath = $path . '/' . $this->filename;
+			$f = $this->source->fileHandler->make($fullpath, array(), 'modFile');
+			if (!$f->exists()) break;
 
-          // Generate new name again
-	  if ($this->privatemode)
-	   $this->filename = $fileitem->generateName() . ".$ext";
-	  else
-	   $this->filename = '_' . $this->filename;
-         };
+			// Generate new name again
+			if ($this->privatemode)
+				$this->filename = $fileitem->generateName() . ".$ext";
+			else
+				$this->filename = '_' . $this->filename;
+		};
 
-         $success = $this->source->uploadObjectsToContainer(
-	    $this->getProperty('path'),
-	    array(array( // emulate a $_FILES object
-		    "name" => $this->filename,
-		    "tmp_name" => $file['tmp_name'],
-		    "error" => "0")
-	    ));
+		$success = $this->source->uploadObjectsToContainer(
+		$this->getProperty('path'),
+			array(array( // emulate a $_FILES object
+				"name" => $this->filename,
+				"tmp_name" => $file['tmp_name'],
+				"error" => "0")
+			));
 
-        if (empty($success)) {
-            $msg = '';
-            $errors = $this->source->getErrors();
-            foreach ($errors as $k => $msg) {
-                $this->modx->error->addField($k,$msg);
-            }
-            return $this->failure($msg);
-        } else {
-	    $fid = $fileitem->generateName();
-	    $fileitem->set('fid', $fid);
-	    $fileitem->set('docid', $this->getProperty('docid'));
-	    $fileitem->set('name', $file['name']);
-	    $fileitem->set('internal_name', $this->filename);
-	    $fileitem->set('path', $this->localpath);
-	    $fileitem->set('private', $this->privatemode);
-	    $fileitem->set('uid', $this->modx->user->get('id'));
+		if (empty($success)) {
+			$msg = '';
+			$errors = $this->source->getErrors();
+			foreach ($errors as $k => $msg) {
+				$this->modx->error->addField($k,$msg);
+			}
 
-	 // Calculate file hash
-	 if ($this->calc_hash)
-	  $fileitem->set('hash', sha1_file($fullpath));
+			return $this->failure($msg);
+		} else {
+			$fid = $fileitem->generateName();
+			$fileitem->set('fid', $fid);
+			$fileitem->set('docid', $this->getProperty('docid'));
+			$fileitem->set('name', $file['name']);
+			$fileitem->set('internal_name', $this->filename);
+			$fileitem->set('path', $this->localpath);
+			$fileitem->set('private', $this->privatemode);
+			$fileitem->set('uid', $this->modx->user->get('id'));
 
-         if (!$fileitem->save()) {
-            return $this->failure($this->modx->lexicon('fileattach.item_err_save'));
-         }
+			// Calculate file hash
+			if ($this->calc_hash)
+				$fileitem->set('hash', sha1_file($fullpath));
 
-	 $list[] = array(
-		    'id' => $fileitem->get('id'),
-		    'fid' => $fid,
-		    'name' => $file['name']);
-	}
-	}
+			if (!$fileitem->save())
+				return $this->failure($this->modx->lexicon('fileattach.item_err_save'));
 
-        return $this->outputArray($list, count($list));
-    }
-
-    /**
-     * Get the active Source
-     * @return modMediaSource|boolean
-     */
-    public function getSource() {
-	if (empty($this->source)) {
-    	    $this->modx->loadClass('sources.modMediaSource');
-    	    $this->source = modMediaSource::getDefaultSource($this->modx,$this->getProperty('source'));
+			$list[] = array(
+				'id' => $fileitem->get('id'),
+				'fid' => $fid,
+				'name' => $file['name']);
+		}
 	}
 
-        if (empty($this->source) || !$this->source->getWorkingContext()) {
-            return false;
-        }
+		return $this->outputArray($list, count($list));
+	}
 
-        return $this->source;
-    }
+	/**
+	 * Get the active Source
+	 * @return modMediaSource|boolean
+	 */
+	public function getSource() {
+		if (empty($this->source)) {
+			$this->modx->loadClass('sources.modMediaSource');
+			$this->source = modMediaSource::getDefaultSource($this->modx,$this->getProperty('source'));
+		}
+
+		if (empty($this->source) || !$this->source->getWorkingContext())
+			return false;
+
+		return $this->source;
+	}
 }
 
 return 'modFileAttachUploadProcessor';

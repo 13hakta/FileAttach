@@ -24,7 +24,7 @@ FileAttach.window.UpdateItem = function (config) {
 	title: _('update'),
 	width: 550,
 	autoHeight: true,
-	url: FileAttach.config.connector_url,
+	url: FileAttach.config.connectorUrl,
 	action: 'mgr/update',
 	fields: this.getFields(config),
 	keys: [{
@@ -117,7 +117,7 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 			fieldLabel: _('resource'),
 			name: 'docid',
     			hiddenName: 'docid',
-			url: FileAttach.config.connector_url,
+			url: FileAttach.config.connectorUrl,
     			baseParams: {
     			    action: 'mgr/searchres'
     			},
@@ -146,7 +146,7 @@ FileAttach.grid.Items = function (config) {
 	}
 	this.sm = new Ext.grid.CheckboxSelectionModel();
 	Ext.applyIf(config, {
-		url: FileAttach.config.connector_url,
+		url: FileAttach.config.connectorUrl,
 		fields: this.getFields(config),
 		columns: this.getColumns(config),
 		ddText: _('fileattach.ddtext'),
@@ -371,12 +371,12 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			header: _('name'),
 			dataIndex: 'name',
 			sortable: true,
-			width: 200,
+			width: 200
 		}, {
 			header: _('description'),
 			dataIndex: 'description',
 			sortable: true,
-			width: 200,
+			width: 200
 		}, {
 			header: _('fileattach.downloads'),
 			dataIndex: 'download',

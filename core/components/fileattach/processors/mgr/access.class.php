@@ -32,27 +32,25 @@ class FileItemAccessProcessor extends modObjectProcessor {
 	public $permission = 'save';
 
 	/**
-	 * @return array|string
-	 */
+	* @return array|string
+	*/
 	public function process() {
-		if (!$this->checkPermissions()) {
+		if (!$this->checkPermissions())
 			return $this->failure($this->modx->lexicon('access_denied'));
-		}
 
 		$private = ($this->getProperty('private'))? true : false;
 		$ids = $this->modx->fromJSON($this->getProperty('ids'));
-		if (empty($ids)) {
+
+		if (empty($ids))
 			return $this->failure($this->modx->lexicon('fileattach.item_err_ns'));
-		}
 
 		foreach ($ids as $id) {
 			/** @var FileItemItem $object */
-			if (!$object = $this->modx->getObject($this->classKey, $id)) {
+			if (!$object = $this->modx->getObject($this->classKey, $id))
 				return $this->failure($this->modx->lexicon('fileattach.item_err_nf'));
-			}
 
 			if (!$object->setPrivate($private))
-			 return $this->failure($this->modx->lexicon('fileattach.item_err_nr'));
+				return $this->failure($this->modx->lexicon('fileattach.item_err_nr'));
 		}
 
 		return $this->success();

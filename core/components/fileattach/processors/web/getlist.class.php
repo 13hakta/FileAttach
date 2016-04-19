@@ -39,14 +39,13 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 	 * @return boolean|string
 	 */
 	public function beforeQuery() {
-		if (!$this->checkPermissions()) {
+		if (!$this->checkPermissions())
 			return $this->modx->lexicon('access_denied');
-		}
 
 		$docid = (int) $this->getProperty('docid');
 
 		if (!$docid)
-		    return $this->modx->lexicon('fileattach.item_err_ns');
+			return $this->modx->lexicon('fileattach.item_err_ns');
 
 		return true;
 	}
@@ -64,23 +63,23 @@ class FileItemGetListProcessor extends modObjectGetListProcessor {
 		$c->select($this->modx->getSelectColumns('FileItem'));
 
 		if ($query)
-		 $c->where(array('name:LIKE' => "%$query%"));
+			$c->where(array('name:LIKE' => "%$query%"));
 
 		$c->where(array('docid' => $docid));
 
 		return $c;
 	}
 
-    public function prepareRow(xPDOObject $object) {
-	$resArray = array(
-		'id' => $object->get('id'),
-		'fid' => $object->get('fid'),
-		'name' => $object->get('name'),
-		'hash' => $object->get('hash')
-	);
+	public function prepareRow(xPDOObject $object) {
+		$resArray = array(
+			'id' => $object->get('id'),
+			'fid' => $object->get('fid'),
+			'name' => $object->get('name'),
+			'hash' => $object->get('hash')
+		);
 
-        return $resArray;
-    }
+		return $resArray;
+	}
 }
 
 return 'FileItemGetListProcessor';
