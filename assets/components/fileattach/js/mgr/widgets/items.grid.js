@@ -85,7 +85,7 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 			hidden: (config.record.object.hash == ''),
 			anchor: '100%'
 		}, {
-        		xtype: 'statictextfield',
+			xtype: 'statictextfield',
 			fieldLabel: _('fileattach.fid'),
 			name: 'fid',
 			id: config.id + '-fid',

@@ -61,7 +61,7 @@ if ($groups != '') {
 if ($makeUrl) {
 	if (!$privateUrl || $showSize) {
 		// Get base URLs
-		$mediaSource = $modx->getOption('fileattach.mediasource',null,1);
+		$mediaSource = $modx->getOption('fileattach.mediasource', null, 1);
 
 		$ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
 		$ms->initialize();
@@ -72,7 +72,7 @@ if ($makeUrl) {
 	}
 
 	$private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
-	$private_url .= 'connector.php?action=web/download&ctx=web&fid=';
+	$private_url .= 'connector.php?action=web/download&ctx=' . $modx->context->key . '&fid=';
 }
 
 // Build query
