@@ -199,7 +199,7 @@ class FileItem extends xPDOSimpleObject {
 	 * @param   integer  $length		Length of generated sequence
 	 * @return  string
 	 */
-	function generateName($length = 32) {
+	static function generateName($length = 32) {
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
 		$charactersLength = strlen($characters);
 
@@ -217,7 +217,7 @@ class FileItem extends xPDOSimpleObject {
 	 * @param   string  $str		Input file name
 	 * @return  string
 	 */
-	function sanitizeName($str) {
+	static function sanitizeName($str) {
 		$bad = array(
 			'../', '<!--', '-->', '<', '>',
 			"'", '"', '&', '$', '#',

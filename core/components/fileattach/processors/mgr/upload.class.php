@@ -91,77 +91,76 @@ class modFileAttachUploadProcessor extends modProcessor {
 				if (!$this->source->createContainer($this->getProperty('path'), ''))
 					return $this->failure($this->modx->lexicon('permission_denied'));
 			}
-	}
+		}
 
-	$path = $this->source->getBasePath() . $this->getProperty('path');
-	$list = array();
+		$path = $this->source->getBasePath() . $this->getProperty('path');
+		$list = array();
 
-	// Create serie of FileItem objects
-	foreach ($_FILES as $file) {
-		$fileitem = $this->modx->newObject('FileItem');
+		$this->modx->loadClass('FileItem');
 
-		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-		$ext = strtolower($ext);
+		// Create serie of FileItem objects
+		foreach ($_FILES as $file) {
+			$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+			$ext = strtolower($ext);
 
-		// Generate name and check for existence
-		if ($this->privatemode)
-			$this->filename = $fileitem->generateName() . ".$ext";
-		else
-			$this->filename = $file['name'];
-
-		$fullpath = '';
-
-		while(1) {
-			$fullpath = $path . '/' . $this->filename;
-			$f = $this->source->fileHandler->make($fullpath, array(), 'modFile');
-			if (!$f->exists()) break;
-
-			// Generate new name again
+			// Generate name and check for existence
 			if ($this->privatemode)
-				$this->filename = $fileitem->generateName() . ".$ext";
+				$this->filename = FileItem::generateName() . ".$ext";
 			else
-				$this->filename = '_' . $this->filename;
-		};
+				$this->filename = $file['name'];
 
-		$success = $this->source->uploadObjectsToContainer(
-		$this->getProperty('path'),
-			array(array( // emulate a $_FILES object
-				"name" => $this->filename,
-				"tmp_name" => $file['tmp_name'],
-				"error" => "0")
-			));
+			$fullpath = '';
 
-		if (empty($success)) {
-			$msg = '';
-			$errors = $this->source->getErrors();
-			foreach ($errors as $k => $msg) {
-				$this->modx->error->addField($k,$msg);
+			while(1) {
+				$fullpath = $path . '/' . $this->filename;
+				$f = $this->source->fileHandler->make($fullpath, array(), 'modFile');
+				if (!$f->exists()) break;
+
+				// Generate new name again
+				if ($this->privatemode)
+					$this->filename = FileItem::generateName() . ".$ext";
+				else
+					$this->filename = '_' . $this->filename;
 			}
 
-			return $this->failure($msg);
-		} else {
-			$fid = $fileitem->generateName();
-			$fileitem->set('fid', $fid);
-			$fileitem->set('docid', $this->getProperty('docid'));
-			$fileitem->set('name', $file['name']);
-			$fileitem->set('internal_name', $this->filename);
-			$fileitem->set('path', $this->localpath);
-			$fileitem->set('private', $this->privatemode);
-			$fileitem->set('uid', $this->modx->user->get('id'));
+			$success = $this->source->uploadObjectsToContainer(
+			$this->getProperty('path'),
+				array(array( // emulate a $_FILES object
+					"name" => $this->filename,
+					"tmp_name" => $file['tmp_name'],
+					"error" => "0")
+				));
 
-			// Calculate file hash
-			if ($this->calc_hash)
-				$fileitem->set('hash', sha1_file($fullpath));
+			if (empty($success)) {
+				$msg = '';
+				$errors = $this->source->getErrors();
+				foreach ($errors as $k => $msg) {
+					$this->modx->error->addField($k,$msg);
+				}
 
-			if (!$fileitem->save())
-				return $this->failure($this->modx->lexicon('fileattach.item_err_save'));
+				return $this->failure($msg);
+			} else {
+				$fid = FileItem::generateName();
+				$fileitem = $this->modx->newObject('FileItem', array(
+					'fid' => $fid,
+					'docid' => $this->getProperty('docid'),
+					'name' => $file['name'],
+					'internal_name' => $this->filename,
+					'path' => $this->localpath,
+					'private' => $this->privatemode,
+					'uid' => $this->modx->user->get('id'),
+					'hash' => ($this->calc_hash)? sha1_file($fullpath) : NULL
+					));
 
-			$list[] = array(
-				'id' => $fileitem->get('id'),
-				'fid' => $fid,
-				'name' => $file['name']);
+				if (!$fileitem->save())
+					return $this->failure($this->modx->lexicon('fileattach.item_err_save'));
+
+				$list[] = array(
+					'id' => $fileitem->get('id'),
+					'fid' => $fid,
+					'name' => $file['name']);
+			}
 		}
-	}
 
 		return $this->outputArray($list, count($list));
 	}
