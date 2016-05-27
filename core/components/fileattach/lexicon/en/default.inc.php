@@ -5,11 +5,14 @@ $_lang['fileattach.intro_msg'] = 'You can select multiple items by holding Shift
 
 $_lang['fileattach.rank'] = 'Rank';
 $_lang['fileattach.downloads'] = 'Downloads';
-$_lang['fileattach.items'] = 'Files';
 
 $_lang['fileattach.fid'] = 'File ID';
 $_lang['fileattach.hash'] = 'Checksum SHA1';
 $_lang['fileattach.size'] = 'Size';
+
+$_lang['fileattach.open'] = 'Open access';
+$_lang['fileattach.private'] = 'Close access';
+$_lang['fileattach.reset'] = 'Reset counter';
 
 $_lang['fileattach.item_err_name'] = 'You must specify the name of File.';
 $_lang['fileattach.item_err_ae'] = 'An File already exists with that name.';

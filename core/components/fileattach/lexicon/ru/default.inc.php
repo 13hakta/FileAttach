@@ -6,7 +6,10 @@ $_lang['fileattach.intro_msg'] = 'Вы можете выделять сразу 
 
 $_lang['fileattach.rank'] = 'Порядок';
 $_lang['fileattach.downloads'] = 'Скачано';
-$_lang['fileattach.items'] = 'файлы';
+
+$_lang['fileattach.open'] = 'Открыть доступ';
+$_lang['fileattach.private'] = 'Закрыть доступ';
+$_lang['fileattach.reset'] = 'Сбросить счетчик';
 
 $_lang['fileattach.fid'] = 'ID файла';
 $_lang['fileattach.hash'] = 'Контрольная сумма SHA1';

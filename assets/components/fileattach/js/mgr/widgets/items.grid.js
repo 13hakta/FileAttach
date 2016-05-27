@@ -1,66 +1,52 @@
 FileAttach.utils.renderBoolean = function (value, props, row) {
-    return value
+	return value
 		? String.format('<span class="green">{0}</span>', _('yes'))
 		: String.format('<span class="red">{0}</span>', _('no'));
 }
 
-FileAttach.utils.getMenu = function (grid) {
- var menu = [];
-
- menu.push({handler: grid['updateItem'], text: _('update')});
- menu.push({handler: grid['resetItem'], text: _('reset')});
- menu.push('-');
- menu.push({handler: grid['removeItem'], text: _('remove')});
-
- return menu;
-};
-
 FileAttach.window.UpdateItem = function (config) {
-    config = config || {};
-    if (!config.id) {
-    	config.id = 'fileattach-item-window-update';
-    }
-    Ext.applyIf(config, {
-	title: _('update'),
-	width: 550,
-	autoHeight: true,
-	url: FileAttach.config.connectorUrl,
-	action: 'mgr/update',
-	fields: this.getFields(config),
-	keys: [{
-		key: Ext.EventObject.ENTER, shift: true, fn: function () {
-			this.submit()
-		}, scope: this
-	}]
-    });
+	config = config || {};
+	if (!config.id) {
+		config.id = 'fileattach-item-window-update';
+	}
+	Ext.applyIf(config, {
+		title: _('update'),
+		width: 550,
+		autoHeight: true,
+		url: FileAttach.config.connectorUrl,
+		action: 'mgr/update',
+		fields: this.getFields(config),
+		keys: [{
+			key: Ext.EventObject.ENTER, shift: true, fn: function () {
+				this.submit()
+			}, scope: this}]
+	});
 
-    FileAttach.window.UpdateItem.superclass.constructor.call(this, config);
-};
+	FileAttach.window.UpdateItem.superclass.constructor.call(this, config);
+}
+
 Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 	calcHash: function (btn, e, row) {
-	    btn.hide();
-	    MODx.Ajax.request({
+		btn.hide();
+		MODx.Ajax.request({
 			url: this.config.url,
 			params: {
-			    action: 'mgr/hash',
-			    id: this.config.record.object.id
+				action: 'mgr/hash',
+				id: this.config.record.object.id
 			},
 			listeners: {
-			    success: {
+				success: {
 				fn: function (r) {
-				    Ext.getCmp(this.config.id + '-hash').setValue(r.object.hash);
-				    Ext.getCmp(this.config.id + '-hash').show();
-				    }, scope: this},
-			    fail: {
-				fn: function () {
-				    btn.show();
-				}, scope: this}
+					Ext.getCmp(this.config.id + '-hash').setValue(r.object.hash);
+					Ext.getCmp(this.config.id + '-hash').show();
+					}, scope: this},
+				fail: { fn: function () { btn.show(); }, scope: this }
 			}
-	    });
+		});
 	},
 
 	getFields: function (config) {
-	    var fields = [{
+		var fields = [{
 			xtype: 'hidden',
 			name: 'id',
 			id: config.id + '-id',
@@ -78,7 +64,7 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 			id: config.id + '-description',
 			anchor: '100%',
 		}, {
-        		xtype: 'statictextfield',
+			xtype: 'statictextfield',
 			fieldLabel: _('fileattach.hash'),
 			id: config.id + '-hash',
 			name: 'hash',
@@ -93,7 +79,7 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 		}];
 	
 	if (config.record.object.hash == '')
-	    fields.push([{
+		fields.push([{
 			xtype: 'button',
 			text: _('fileattach.calculate'),
 			handler: this.calcHash,
@@ -101,41 +87,40 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 		}]);
 
 	fields.push([{
-	    xtype: 'xcheckbox',
-	    id: config.id + '-private',
-	    boxLabel: _('private'),
-	    hideLabel: true,
-	    name: 'private'
+		xtype: 'xcheckbox',
+		id: config.id + '-private',
+		boxLabel: _('private'),
+		hideLabel: true,
+		name: 'private'
 	}]);
 
-	if (FileAttach.config.docid > 0) 
-	    fields.push({xtype: 'hidden', name: 'docid', id: config.id + '-docid'});
+	if (FileAttach.config.docid > 0)
+		fields.push({xtype: 'hidden', name: 'docid', id: config.id + '-docid'});
 	else {
-	    fields.unshift({
+		fields.unshift({
 			xtype: 'modx-combo',
 			id: config.id + '-docid',
 			fieldLabel: _('resource'),
 			name: 'docid',
-    			hiddenName: 'docid',
+			hiddenName: 'docid',
 			url: FileAttach.config.connectorUrl,
-    			baseParams: {
-    			    action: 'mgr/searchres'
-    			},
+			baseParams: {
+				action: 'mgr/searchres'
+			},
 			fields: ['id','pagetitle','description'],
 			displayField: 'pagetitle',
 			anchor: '100%',
-    			pageSize: 10,
-    			editable: true,
-    			typeAhead: true,
+			pageSize: 10,
+			editable: true,
+			typeAhead: true,
 			allowBlank: false,
 			forceSelection: true,
-    			tpl: new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item"><span style="font-weight: bold">{pagetitle}</span>',
-            '<tpl if="description"><br/><span style="font-style:italic">{description}</span></tpl>', '</div></tpl>')
+			tpl: new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item"><span style="font-weight: bold">{pagetitle}</span>',
+				'<tpl if="description"><br/><span style="font-style:italic">{description}</span></tpl>', '</div></tpl>')
 		});
-	    }
-	    return fields;
 	}
-
+	return fields;
+	}
 });
 Ext.reg('fileattach-item-window-update', FileAttach.window.UpdateItem);
 
@@ -158,9 +143,10 @@ FileAttach.grid.Items = function (config) {
 		},
 		listeners: {
 			rowDblClick: function (grid, rowIndex, e) {
-			    var row = grid.store.getAt(rowIndex);
-			    this.updateItem(grid, e, row);
-			}
+				var row = grid.store.getAt(rowIndex);
+				this.updateItem(grid, e, row);
+			},
+			sortchange: this.saveSort
 		},
 		viewConfig: {
 			forceFit: true,
@@ -176,16 +162,27 @@ FileAttach.grid.Items = function (config) {
 
 	// Enable D&D only in resource editor
 	if (FileAttach.config.docid)
-	    Ext.applyIf(config, {
-    		plugins: [new Ext.ux.dd.GridDragDropRowOrder({
-        	    copy: false,
-        	    scrollable: true,
-        	    targetCfg: {},
-        	    listeners: {
-            		'afterrowmove': {fn:this.onAfterRowMove, scope:this}
-        	    }
-    		})]
-	});
+		Ext.applyIf(config, {
+			plugins: [new Ext.ux.dd.GridDragDropRowOrder({
+				copy: false,
+				scrollable: true,
+				targetCfg: {},
+				listeners: {
+					'afterrowmove': {fn:this.onAfterRowMove, scope:this}
+				}
+				})]
+			});
+
+	// Restore sort state
+	var sortInfo = [];
+	if (sortInfo = this.restoreSort()) {
+		// Workaround for absence of sortInfo support
+		config.baseParams.sort = sortInfo[0];
+		config.baseParams.dir = sortInfo[1];
+
+		config.sortBy = sortInfo[0];
+		config.sortDir = sortInfo[1];
+	}
 
 	FileAttach.grid.Items.superclass.constructor.call(this, config);
 
@@ -195,15 +192,37 @@ FileAttach.grid.Items = function (config) {
 			this.getSelectionModel().clearSelections();
 		}
 	}, this);
-};
+}
 Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 	windows: {},
 
 	getMenu: function (grid, rowIndex) {
-		var row = grid.getStore().getAt(rowIndex);
-		var menu = FileAttach.utils.getMenu(this);
+		var menu = [
+			{handler: grid['updateItem'], text: _('update')},
+			{handler: grid['resetItem'], text: _('reset')},
+			'-',
+			{handler: grid['removeItem'], text: _('remove')}
+		];
 
 		this.addContextMenuItem(menu);
+	},
+
+	// Restore sort info to local storage
+	restoreSort: function () {
+		if (typeof(Storage) !== "undefined") {
+			var sortInfo = localStorage.getItem('fa_sort' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''));
+			return (sortInfo)? sortInfo.split('|', 2) : false;
+		}
+
+		return false;
+	},
+
+	// Save sort info to local storage
+	saveSort: function (grid, sortInfo) {
+		if (typeof(Storage) !== "undefined") {
+			localStorage.setItem('fa_sort' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''),
+				sortInfo.field + "|" + sortInfo.direction);
+		}
 	},
 
 	updateItem: function (btn, e, row) {
@@ -230,11 +249,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 							id: Ext.id(),
 							record: r,
 							listeners: {
-								success: {
-									fn: function () {
-										this.refresh();
-									}, scope: this
-								}
+								success: { fn: function () { this.refresh(); }, scope: this }
 							}
 						});
 						w.reset();
@@ -255,20 +270,15 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		MODx.Ajax.request({
 			url: this.config.url,
 			params: {
-			    action: 'mgr/access',
-			    private: (act.name == 'close')? 1:0,
-			    ids: Ext.util.JSON.encode(ids),
+				action: 'mgr/access',
+				private: (act.name == 'close')? 1:0,
+				ids: Ext.util.JSON.encode(ids),
 			},
 			listeners: {
-				success: {
-					fn: function (r) {
-						this.refresh();
-					    }, scope: this
-					 },
+				success: { fn: function (r) { this.refresh(); }, scope: this },
 				failure: {fn: function (r) {}, scope: this}
 			}
 		});
-
 
 		return true;
 	},
@@ -330,34 +340,34 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 	},
 
 	uploadFiles: function(btn,e) {
-	    if (!this.uploader) {
-		aVer = MODx.config.version.split('.');
-		uploaddialog = ((aVer[0] == 2) && aVer[1] >= 3)? MODx.util.MultiUploadDialog.Dialog : Ext.ux.UploadDialog.Dialog;
+		if (!this.uploader) {
+			aVer = MODx.config.version.split('.');
+			uploaddialog = ((aVer[0] == 2) && aVer[1] >= 3)? MODx.util.MultiUploadDialog.Dialog : Ext.ux.UploadDialog.Dialog;
 
-        	this.uploader = new uploaddialog({
-		    title: _('upload'),
-		    url: this.config.url,
-		    base_params: {
-                	action: 'mgr/upload',
-			docid: FileAttach.config.docid
-            	    },
-                cls: 'ext-ux-uploaddialog-dialog modx-upload-window'
-            });
-            this.uploader.on('hide', this.refresh,this);
-            this.uploader.on('close', this.refresh,this);
-        }
+			this.uploader = new uploaddialog({
+				title: _('upload'),
+				url: this.config.url,
+				base_params: {
+					action: 'mgr/upload',
+					docid: FileAttach.config.docid
+				},
+				cls: 'ext-ux-uploaddialog-dialog modx-upload-window'
+			});
+			this.uploader.on('hide', this.refresh,this);
+			this.uploader.on('close', this.refresh,this);
+		}
 
-	// Automatically open picker
-	this.uploader.show(btn);
-        this.uploader.buttons[0].input_file.dom.click();
-    },
+		// Automatically open picker
+		this.uploader.show(btn);
+		this.uploader.buttons[0].input_file.dom.click();
+	},
 
 	getFields: function (config) {
 		return ['id', 'name', 'description', 'docid', 'download', 'private', 'pagetitle', 'username', 'rank'];
 	},
 
 	getColumns: function (config) {
-	    var columns = [this.sm, {
+		var columns = [this.sm, {
 			header: _('fileattach.rank'),
 			dataIndex: 'rank',
 			hidden: true,
@@ -388,53 +398,53 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			renderer: FileAttach.utils.renderBoolean
 		}];
 
-	    if (!FileAttach.config.docid)
-		columns.push({
-			header: _('resource'),
-			dataIndex: 'pagetitle',
-			sortable: true
-		}, {
-			header: _('user'),
-			dataIndex: 'username',
-			sortable: true
-		});
+		if (!FileAttach.config.docid)
+			columns.push({
+				header: _('resource'),
+				dataIndex: 'pagetitle',
+				sortable: true
+				}, {
+				header: _('user'),
+				dataIndex: 'username',
+				sortable: true
+			});
 
-	    return columns;
+		return columns;
 	},
 
 	getTopBar: function (config) {
-	    var fields = [];
+		var fields = [];
 
-	    if (FileAttach.config.docid)
-		fields.push({
-			xtype: 'button',
-			cls: 'primary-button',
-			text: _('upload'),
-			handler: this.uploadFiles,
-			scope: this
-		});
+		if (FileAttach.config.docid)
+			fields.push({
+				xtype: 'button',
+				cls: 'primary-button',
+				text: _('upload'),
+				handler: this.uploadFiles,
+				scope: this
+			});
 
 		fields.push({
 			xtype: 'splitbutton',
 			text: _('remove'),
 			menu: [{
-			 name: 'open',
-			 text: _('open'),
-			 handler: this.accessItem,
-			 scope: this
-			}, {
-			name: 'close',
-			 text: _('close'),
-			 handler: this.accessItem,
-			 scope: this
-			}, '-', {
-			 text: _('reset'),
-			 handler: this.resetItem,
-			 scope: this
-			}, {
-			 text: _('remove'),
-			 handler: this.removeItem,
-			 scope: this
+				name: 'open',
+				text: _('fileattach.open'),
+				handler: this.accessItem,
+				scope: this
+				}, {
+				name: 'close',
+				text: _('fileattach.private'),
+				handler: this.accessItem,
+				scope: this
+				}, '-', {
+				text: _('fileattach.reset'),
+				handler: this.resetItem,
+				scope: this
+				}, {
+				text: _('remove'),
+				handler: this.removeItem,
+				scope: this
 			}],
 			text: _('bulk_actions')
 		}, '->', {
@@ -446,9 +456,8 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			listeners: {
 				render: {
 					fn: function (tf) {
-						tf.getEl().addKeyListener(Ext.EventObject.ENTER, function () {
-							this._doSearch(tf);
-						}, this);
+						tf.getEl().addKeyListener(Ext.EventObject.ENTER,
+							function () { this._doSearch(tf); }, this);
 					}, scope: this
 				}
 			}
@@ -476,7 +485,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			}
 		});
 
-	    return fields;
+		return fields;
 	},
 
 	onClick: function (e) {
@@ -514,10 +523,10 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 
 	_doSearch: function (tf, nv, ov) {
 		if (tf.name == 'query')
-		 this.getStore().baseParams.query = tf.getValue();
+			this.getStore().baseParams.query = tf.getValue();
 
 		if (tf.name == 'uid')
-		 this.getStore().baseParams.uid = tf.getValue();
+			this.getStore().baseParams.uid = tf.getValue();
 		this.getBottomToolbar().changePage(1);
 		this.refresh();
 	},
@@ -532,35 +541,35 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 	},
 
 	onAfterRowMove: function(dt,sri,ri,sels) {
-    	    var s = this.getStore();
-    	    var sourceRec = s.getAt(sri);
-    	    var belowRec = s.getAt(ri);
-    	    var total = s.getTotalCount();
-	    var upd = {};
+		var s = this.getStore();
+		var sourceRec = s.getAt(sri);
+		var belowRec = s.getAt(ri);
+		var total = s.getTotalCount();
+		var upd = {};
 
-    	    sourceRec.set('rank', sri);
-	    sourceRec.commit();
-	    upd[sourceRec.get('id')] = sri;
+		sourceRec.set('rank', sri);
+		sourceRec.commit();
+		upd[sourceRec.get('id')] = sri;
 
-        var brec;
-        for (var x = (ri - 1); x < total; x++) {
-            brec = s.getAt(x);
-            if (brec) {
-                brec.set('rank', x);
-                brec.commit();
-		upd[brec.get('id')] = x;
-            }
-        }
-	
-	MODx.Ajax.request({
-		url: this.config.url,
-		params: {
-		    action: 'mgr/rank',
-		    rank: Ext.util.JSON.encode(upd),
+		var brec;
+		for (var x = (ri - 1); x < total; x++) {
+			brec = s.getAt(x);
+			if (brec) {
+				brec.set('rank', x);
+				brec.commit();
+				upd[brec.get('id')] = x;
+			}
 		}
-	});
 
-        return true;
-    }
+		MODx.Ajax.request({
+			url: this.config.url,
+			params: {
+				action: 'mgr/rank',
+				rank: Ext.util.JSON.encode(upd),
+			}
+		});
+
+		return true;
+	}
 });
 Ext.reg('fileattach-grid-items', FileAttach.grid.Items);
