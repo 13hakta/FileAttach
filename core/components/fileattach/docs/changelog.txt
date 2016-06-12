@@ -1,5 +1,13 @@
 Changelog for FileAttach.
 
+1.0.8 pl1
+==============
+- Remember column sort state in session
+- Remember column visibility in session
+- Make rank column sortable in resource editor
+- Fix button captions / localization
+- Reformat code
+
 1.0.8
 ==============
 - Fix margins in panels
