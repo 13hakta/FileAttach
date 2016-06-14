@@ -1,3 +1,4 @@
+// Helper boolean render
 FileAttach.utils.renderBoolean = function (value, props, row) {
 	return value
 		? String.format('<span class="green">{0}</span>', _('yes'))
@@ -186,6 +187,13 @@ FileAttach.grid.Items = function (config) {
 
 	FileAttach.grid.Items.superclass.constructor.call(this, config);
 
+	// Set sort arrow
+	if (sortInfo.length > 0)
+		this.store.setDefaultSort(sortInfo[0], sortInfo[1]);
+
+	this.restoreColumn();
+	this.colModel.on('hiddenchange', this.saveColumn, this);
+
 	// Clear selection on grid refresh
 	this.store.on('load', function () {
 		if (this._getSelectedIds().length) {
@@ -196,6 +204,7 @@ FileAttach.grid.Items = function (config) {
 Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 	windows: {},
 
+	// Item context menu
 	getMenu: function (grid, rowIndex) {
 		var menu = [
 			{handler: grid['updateItem'], text: _('update')},
@@ -207,24 +216,49 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		this.addContextMenuItem(menu);
 	},
 
-	// Restore sort info to local storage
+	// Restore sort info to session storage
 	restoreSort: function () {
 		if (typeof(Storage) !== "undefined") {
-			var sortInfo = localStorage.getItem('fa_sort' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''));
+			var sortInfo = sessionStorage.getItem('fa_sort' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''));
 			return (sortInfo)? sortInfo.split('|', 2) : false;
 		}
 
 		return false;
 	},
 
-	// Save sort info to local storage
+	// Save sort info to session storage
 	saveSort: function (grid, sortInfo) {
 		if (typeof(Storage) !== "undefined") {
-			localStorage.setItem('fa_sort' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''),
+			sessionStorage.setItem('fa_sort' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''),
 				sortInfo.field + "|" + sortInfo.direction);
 		}
 	},
 
+	// Restore column info from session storage
+	restoreColumn: function () {
+		if (typeof(Storage) !== "undefined") {
+			var colInfo = sessionStorage.getItem('fa_col' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''));
+			if (colInfo != null) {
+				var cols = colInfo.split(',');
+				for (var i = 0; i < cols.length; i++)
+					this.colModel.setHidden(i + 1, cols[i] == '0');
+			}
+		}
+	},
+
+	// Save column visibility to session storage
+	saveColumn: function(colModel, colIndex, hidden) {
+		if (typeof(Storage) !== "undefined") {
+			var count = colModel.getColumnCount(false);
+			var cols = [];
+			for (var i = 1; i < count; i++) cols.push(colModel.isHidden(i)? 0 : 1);
+
+			sessionStorage.setItem('fa_col' + ((FileAttach.config.docid > 0)? '_' + FileAttach.config.docid : ''),
+				cols.join(','));
+		}
+	},
+
+	// Edit item
 	updateItem: function (btn, e, row) {
 		if (typeof(row) != 'undefined') {
 			this.menu.record = row.data;
@@ -261,6 +295,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		});
 	},
 
+	// Edit item access
 	accessItem: function (act, btn, e) {
 		var ids = this._getSelectedIds();
 		if (!ids.length) {
@@ -283,6 +318,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		return true;
 	},
 
+	// Reset download count
 	resetItem: function (act, btn, e) {
 		var ids = this._getSelectedIds();
 		if (!ids.length) {
@@ -311,6 +347,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		return true;
 	},
 
+	// Remove item
 	removeItem: function (act, btn, e) {
 		var ids = this._getSelectedIds();
 		if (!ids.length) {
@@ -339,6 +376,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		return true;
 	},
 
+	// Show uploader dialog
 	uploadFiles: function(btn,e) {
 		if (!this.uploader) {
 			aVer = MODx.config.version.split('.');
@@ -362,15 +400,18 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		this.uploader.buttons[0].input_file.dom.click();
 	},
 
+	// Define visible fields
 	getFields: function (config) {
 		return ['id', 'name', 'description', 'docid', 'download', 'private', 'pagetitle', 'username', 'rank'];
 	},
 
+	// Define columns
 	getColumns: function (config) {
 		var columns = [this.sm, {
 			header: _('fileattach.rank'),
 			dataIndex: 'rank',
 			hidden: true,
+			sortable: FileAttach.config.docid > 0,
 			width: 50
 		}, {
 			header: _('id'),
@@ -412,6 +453,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		return columns;
 	},
 
+	// Form top bar
 	getTopBar: function (config) {
 		var fields = [];
 
@@ -470,9 +512,8 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			listeners: {
 				render: {
 					fn: function (tf) {
-						tf.getEl().addKeyListener(Ext.EventObject.ENTER, function () {
-							this._doSearch(tf);
-						}, this);
+						tf.getEl().addKeyListener(Ext.EventObject.ENTER,
+							function () { this._doSearch(tf); }, this);
 					}, scope: this
 				}
 			}
@@ -488,6 +529,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		return fields;
 	},
 
+	// Header button handler
 	onClick: function (e) {
 		var elem = e.getTarget();
 		if (elem.nodeName == 'BUTTON') {
@@ -507,20 +549,20 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		return this.processEvent('click', e);
 	},
 
+	// Get list of selected ID
 	_getSelectedIds: function () {
 		var ids = [];
 		var selected = this.getSelectionModel().getSelections();
 
 		for (var i in selected) {
-			if (!selected.hasOwnProperty(i)) {
-				continue;
-			}
+			if (!selected.hasOwnProperty(i)) continue;
 			ids.push(selected[i]['id']);
 		}
 
 		return ids;
 	},
 
+	// Perform store update with search query
 	_doSearch: function (tf, nv, ov) {
 		if (tf.name == 'query')
 			this.getStore().baseParams.query = tf.getValue();
@@ -531,6 +573,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		this.refresh();
 	},
 
+	// Reset search query
 	_clearSearch: function (btn, e) {
 		this.getStore().baseParams.query = '';
 		this.getStore().baseParams.uid = '';
@@ -540,6 +583,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 		this.refresh();
 	},
 
+	// Handle changing item order with dragging
 	onAfterRowMove: function(dt,sri,ri,sels) {
 		var s = this.getStore();
 		var sourceRec = s.getAt(sri);
