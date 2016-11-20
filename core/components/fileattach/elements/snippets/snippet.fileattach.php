@@ -41,6 +41,7 @@ $privateUrl = $modx->getOption('privateUrl', $scriptProperties, false);
 $showHASH = $modx->getOption('showHASH', $scriptProperties, false);
 $showSize = $modx->getOption('showSize', $scriptProperties, false);
 $showExt = $modx->getOption('showExt', $scriptProperties, false);
+$showTime = $modx->getOption('showTime', $scriptProperties, false);
 $groups = $modx->getOption('groups', $scriptProperties, '');
 
 // Check access
@@ -107,6 +108,9 @@ foreach ($items as $item) {
 
 	if ($showSize)
 		$itemArr['size'] = $item->getSize();
+
+	if ($showTime)
+		$itemArr['timestamp'] = filectime($item->getFullPath());
 
 	if ($showExt) {
 		$itemArr['ext'] = strtolower(
