@@ -10,10 +10,12 @@ require_once MODX_CONNECTORS_PATH . 'index.php';
 $FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/');
 $modx->lexicon->load('fileattach:default');
 
-if ($modx->user->hasSessionContext($modx->context->get('key'))) {
-    $_SERVER['HTTP_MODAUTH'] = $_SESSION["modx.{$modx->context->get('key')}.user.token"];
-} else {
-    $_SERVER['HTTP_MODAUTH'] = 0;
+$key = $modx->context->get('key');
+if ($modx->user->hasSessionContext($key))
+	$_SERVER['HTTP_MODAUTH'] = $_SESSION["modx.$key.user.token"];
+else {
+	define('MODX_REQP', false);
+	$_SERVER['HTTP_MODAUTH'] = 0;
 }
 
 // handle request

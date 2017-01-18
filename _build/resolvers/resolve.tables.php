@@ -10,6 +10,7 @@ if ($object->xpdo) {
 
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		case xPDOTransport::ACTION_INSTALL:
+			// Create tables
 			$objects = array(
 				'FileItem', 'FileAttachMediaSource'
 			);

@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -64,14 +64,14 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 		$list = array();
 
 		if ($path == '/') {
-			$c = $this->xpdo->newQuery('FileItem');
+			$c = $this->xpdo->newQuery('modResource');
 
-			$c->select('FileItem.id,FileItem.docid,modResource.pagetitle');
-			$c->leftJoin('modResource','modResource', 'modResource.id=FileItem.docid'); 
+			$c->select('modResource.id,modResource.pagetitle');
+			$c->rightJoin('FileItem','FileItem', 'modResource.id=FileItem.docid'); 
 			$c->sortby('modResource.pagetitle', 'ASC');
-			$c->groupby('docid');
+			$c->groupby('modResource.id');
 
-			$resources = $this->xpdo->getCollection('FileItem', $c);
+			$resources = $this->xpdo->getCollection('modResource', $c);
 			/** @var modResource $resource */
 			foreach ($resources as $resource) {
 				$list[] = array(

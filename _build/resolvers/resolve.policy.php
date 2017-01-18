@@ -32,8 +32,8 @@ if ($object->xpdo) {
 		case xPDOTransport::ACTION_INSTALL:
 		case xPDOTransport::ACTION_UPGRADE:
 			$modx =& $object->xpdo;
-			$modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path').'components/fileattach/').'model/';
-			$modx->addPackage('fileattach',$modelPath);
+			$modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/';
+			$modx->addPackage('fileattach', $modelPath);
 
 			$modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 

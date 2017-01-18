@@ -1,5 +1,11 @@
 Changelog for FileAttach.
 
+1.0.9
+==============
+- Compatibility with MODx >=2.5.2
+- Fix MediaSource error with MySQL 5.7 ONLY_FULL_GROUP_BY SQL Mode
+- Add download range support, download continuation
+
 1.0.8 pl1
 ==============
 - Remember column sort state in session

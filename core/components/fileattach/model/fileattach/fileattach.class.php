@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -42,9 +42,7 @@ class FileAttach {
 
 		$this->config = array_merge(array(
 			'assetsUrl' => $assetsUrl,
-			'cssUrl' => $assetsUrl . 'css/',
 			'jsUrl' => $assetsUrl . 'js/',
-			'imagesUrl' => $assetsUrl . 'img/',
 			'connectorUrl' => $connectorUrl,
 
 			'corePath' => $corePath,

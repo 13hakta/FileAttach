@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -52,8 +52,83 @@ class FileItemDownloadProcessor extends modObjectProcessor {
 	 * @return redirect or bytestream
 	*/
 	public function process() {
+		@session_write_close();
+
+		$perform_count = true;
+
+		// If file is private then redirect else read file directly
+		if ($this->object->get('private')) {
+			// Get file info
+			$filename = $this->object->getFullPath();
+			$filesize = filesize($filename);
+			$mtime = filemtime($filename);
+
+			if (isset($_SERVER['HTTP_RANGE'])) {
+				// Get range
+				$range = str_replace('bytes=', '', $_SERVER['HTTP_RANGE']);
+				list($start, $end) = explode('-', $range);
+
+				// Check data
+				if (empty($start)) {
+					header($_SERVER['SERVER_PROTOCOL'] . ' 416 Requested Range Not Satisfiable');
+					return;
+				} else
+					$perform_count = false;
+
+				// Check range
+				$start = intval($start);
+				$end = intval($end);
+
+				if (($end == 0) || ($end < $start) || ($end >= $filesize)) $end = $filesize - 1;
+
+				$remain = $end - $start;
+
+				if ($remain == 0) {
+					header($_SERVER['SERVER_PROTOCOL'] . ' 416 Requested Range Not Satisfiable');
+					return;
+				}
+
+				header($_SERVER['SERVER_PROTOCOL'] . ' 206 Partial Content');
+				header("Content-Range: bytes $start-$end/$filesize");
+			} else {
+				$remain = $filesize;
+			}
+
+			// Put headers
+			header('Last-Modified: ' . gmdate('r', $mtime));
+			header('ETag: ' . sprintf('%x-%x-%x', fileinode($filename), $filesize, $mtime));
+			header('Accept-Ranges: bytes');
+			header('Content-Type: application/force-download');
+			header('Content-Length: ' . $remain);
+			header('Content-Disposition: attachment; filename="' . $this->object->get('name') . '"');
+			header('Connection: close');
+
+			if ($range) {
+				$fh = fopen($filename, 'rb');
+				fseek($fh, $start);
+
+				// Output contents
+				$blocksize = 8192;
+
+				while (!feof($fh) && ($remain > 0)) {
+					echo fread($fh, ($remain > $blocksize)? $blocksize : $remain);
+					flush();
+
+					$remain -= $blocksize;
+				}
+
+				fclose($fh);
+			} else {
+				readfile($filename);
+			}
+		} else {
+			// In public mode redirect to file url
+			$fileurl = $this->object->getUrl();
+			header("Location: $fileurl", true, 302);
+		}
+
 		// Count downloads if allowed by config
-		if ($this->modx->getOption('fileattach.download', null, true)) {
+		if ($perform_count && $this->modx->getOption('fileattach.download', null, true)) {
 			$c = $this->modx->newQuery($this->classKey);
 			$c->command('update');
 			$c->set(array(
@@ -64,20 +139,6 @@ class FileItemDownloadProcessor extends modObjectProcessor {
 			));
 			$c->prepare();
 			$c->stmt->execute();
-		}
-
-		@session_write_close();
-
-		// If file is private then redirect else read file directly
-		if ($this->object->get('private')) {
-			header("Content-Type: application/force-download");
-			header("Content-Disposition: attachment; filename=\"" . $this->object->get('name') . "\"");
-
-			readfile($this->object->getFullPath());
-		} else {
-			// In private mode redirect to file url
-			$fileurl = $this->object->getUrl();
-			header("Location: $fileurl", true, 302);
 		}
 	}
 }
