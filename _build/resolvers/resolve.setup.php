@@ -4,7 +4,8 @@
  *
  * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
- * This file is part of FileAttach, a simple commenting component for MODx Revolution.
+ * This file is part of FileAttach, tool to attach files to resources with
+ * MODX Revolution's Manager.
  *
  * FileAttach is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software

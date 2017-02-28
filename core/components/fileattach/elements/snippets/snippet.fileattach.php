@@ -28,7 +28,7 @@ if (!$FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOptio
 	return 'Could not load FileAttach class!';
 }
 
-// Do your snippet code here.
+// Get script options
 $tpl = $modx->getOption('tpl', $scriptProperties, 'FileItemTpl');
 $sortby = $modx->getOption('sortBy', $scriptProperties, 'name');
 $sortdir = $modx->getOption('sortDir', $scriptProperties, 'ASC');

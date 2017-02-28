@@ -124,7 +124,7 @@ class modFileAttachUploadProcessor extends modProcessor {
 			}
 
 			$success = $this->source->uploadObjectsToContainer(
-			$this->getProperty('path'),
+				$this->getProperty('path'),
 				array(array( // emulate a $_FILES object
 					"name" => $this->filename,
 					"tmp_name" => $file['tmp_name'],

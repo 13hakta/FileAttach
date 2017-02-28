@@ -11,7 +11,7 @@ $tmp = array(
 		'lexicon' => 'fileattach:setting',
 		'value' => 1
 	),
-		'files_path' => array(
+	'files_path' => array(
 		'key' => 'fileattach.files_path',
 		'name' => 'setting_fileattach.files_path',
 		'description' => 'setting_fileattach.files_path_desc',

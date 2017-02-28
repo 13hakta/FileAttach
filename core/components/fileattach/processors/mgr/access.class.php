@@ -23,7 +23,7 @@
 */
 
 /**
- * Reset download counter
+ * Set private flag
  */
 class FileItemAccessProcessor extends modObjectProcessor {
 	public $objectType = 'FileItem';
