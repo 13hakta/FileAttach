@@ -3,7 +3,7 @@ var FileAttach = function (config) {
 	FileAttach.superclass.constructor.call(this, config);
 };
 Ext.extend(FileAttach, Ext.Component, {
-	page: {}, window: {}, grid: {}, tree: {}, panel: {}, combo: {}, config: {}, view: {}, utils: {}
+	page: {}, window: {}, grid: {}, panel: {}, config: {}, utils: {}
 });
 Ext.reg('fileattach', FileAttach);
 
