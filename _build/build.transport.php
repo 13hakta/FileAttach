@@ -26,7 +26,6 @@ $sources = array(
 	'plugins' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/plugins/',
 	'lexicon' => $root . 'core/components/' . PKG_NAME_LOWER . '/lexicon/',
 	'docs' => $root . 'core/components/' . PKG_NAME_LOWER . '/docs/',
-	'pages' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/pages/',
 	'source_assets' => $root . 'assets/components/' . PKG_NAME_LOWER,
 	'source_core' => $root . 'core/components/' . PKG_NAME_LOWER,
 );
