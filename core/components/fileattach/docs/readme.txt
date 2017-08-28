@@ -10,5 +10,5 @@ Feel free to suggest ideas/improvements/bugs on GitHub:
 http://github.com/13hakta/FileAttach/issues
 
 Official docs:
-http://13hakta.ru/dev/modx/fileattach-en.html (English)
-http://13hakta.ru/dev/modx/fileattach.html (Russian)
+http://13hakta.ru/blog/fileattach-en.html (English)
+http://13hakta.ru/blog/fileattach.html (Russian)
