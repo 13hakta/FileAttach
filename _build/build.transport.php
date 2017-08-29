@@ -228,7 +228,7 @@ if (defined('BUILD_PLUGIN_UPDATE')) {
 	);
 	$attr[xPDOTransport::RELATED_OBJECT_ATTRIBUTES]['PluginEvents'] = array(
 		xPDOTransport::PRESERVE_KEYS => true,
-		xPDOTransport::UPDATE_OBJECT => BUILD_PLUGIN_UPDATE,
+		xPDOTransport::UPDATE_OBJECT => BUILD_EVENT_UPDATE,
 		xPDOTransport::UNIQUE_KEY => array('pluginid', 'event'),
 	);
 	$plugins = include $sources['data'] . 'transport.plugins.php';

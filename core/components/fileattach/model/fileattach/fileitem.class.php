@@ -190,6 +190,11 @@ class FileItem extends xPDOSimpleObject {
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] An error occurred while trying to remove the attachment file at: ' . $filename);
 		}
 
+		$this->xpdo->invokeEvent('faOnRemove', array(
+			'id' => $this->get('id'),
+			'object' => &$this)
+		);
+
 		return parent::remove($ancestors);
 	}
 
