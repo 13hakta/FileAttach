@@ -1,5 +1,12 @@
 Changelog for FileAttach.
 
+1.0.10
+==============
+- Add system event 'faOnRemove'
+- Reformat table view
+- Remove unneeded JS objects
+- Fix typos, update doc URLs
+
 1.0.9
 ==============
 - Compatibility with MODx >=2.5.2
