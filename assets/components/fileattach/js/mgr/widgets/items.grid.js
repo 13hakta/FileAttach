@@ -5,6 +5,13 @@ FileAttach.utils.renderBoolean = function (value, props, row) {
 		: String.format('<span class="red">{0}</span>', _('no'));
 }
 
+// Helper title render
+FileAttach.utils.renderName = function (value, props, row) {
+	return value +
+		((row.data['description'])? '<br/><small>' +
+		row.data['description'] + '</small>' : '');
+}
+
 FileAttach.window.UpdateItem = function (config) {
 	config = config || {};
 	if (!config.id) {
@@ -422,19 +429,17 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			header: _('name'),
 			dataIndex: 'name',
 			sortable: true,
-			width: 200
-		}, {
-			header: _('description'),
-			dataIndex: 'description',
-			sortable: true,
-			width: 200
+			width: 200,
+			renderer: FileAttach.utils.renderName
 		}, {
 			header: _('fileattach.downloads'),
 			dataIndex: 'download',
+			width: 50,
 			sortable: true,
 		}, {
 			header: _('private'),
 			dataIndex: 'private',
+			width: 50,
 			sortable: true,
 			renderer: FileAttach.utils.renderBoolean
 		}];
