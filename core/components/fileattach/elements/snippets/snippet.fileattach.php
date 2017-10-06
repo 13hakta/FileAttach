@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -44,6 +44,9 @@ $showExt = $modx->getOption('showExt', $scriptProperties, false);
 $showTime = $modx->getOption('showTime', $scriptProperties, false);
 $groups = $modx->getOption('groups', $scriptProperties, '');
 
+$offset = $modx->getOption('offset', $scriptProperties, 0);
+$totalVar = $modx->getOption('totalVar', $scriptProperties, 'total');
+
 // Check access
 if ($groups != '') {
 	// Forbid access for non-authorized visitor
@@ -78,8 +81,6 @@ if ($makeUrl) {
 
 // Build query
 $c = $modx->newQuery('FileItem');
-$c->sortby($sortby, $sortdir);
-$c->limit($limit);
 
 if ($showHASH)
 	$c->select($modx->getSelectColumns('FileItem', 'FileItem'));
@@ -87,6 +88,14 @@ else
 	$c->select($modx->getSelectColumns('FileItem', 'FileItem', '', array('hash'), true));
 
 $c->where(array('docid' => ($resource > 0)? $resource : $modx->resource->get('id')));
+
+if (!empty($limit)) {
+	$total = $modx->getCount('FileItem', $c);
+	$modx->setPlaceholder($totalVar, $total);
+}
+
+if (!empty($limit)) $c->limit($limit, $offset);
+$c->sortby($sortby, $sortdir);
 
 $items = $modx->getIterator('FileItem', $c);
 

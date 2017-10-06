@@ -23,6 +23,14 @@ $tmp = array(
 		'type' => 'numberfield',
 		'value' => 0,
 	),
+	'offset' => array(
+		'type' => 'numberfield',
+		'value' => 0,
+	),
+	'totalVar' => array(
+		'type' => 'textfield',
+		'value' => 'total',
+	),
 	'outputSeparator' => array(
 		'type' => 'textfield',
 		'value' => "\n",

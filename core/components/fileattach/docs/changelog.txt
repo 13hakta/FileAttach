@@ -1,5 +1,9 @@
 Changelog for FileAttach.
 
+1.0.10pl1
+==============
+- Add support for pagination with new options: totalVar, offset
+
 1.0.10
 ==============
 - Add system event 'faOnRemove'
