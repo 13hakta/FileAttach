@@ -214,6 +214,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 	// Item context menu
 	getMenu: function (grid, rowIndex) {
 		var menu = [
+			{handler: grid['downloadItem'], text: _('file_download')},
 			{handler: grid['updateItem'], text: _('update')},
 			{handler: grid['resetItem'], text: _('reset')},
 			'-',
@@ -380,6 +381,35 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 				}
 			}
 		});
+		return true;
+	},
+
+	// Download file
+	downloadItem: function (act, btn, e) {
+		var item = this._getSelected();
+
+		var filePath = MODx.config['fileattach.files_path'] + item['path'] + item['internal_name'];
+
+		MODx.Ajax.request({
+			url: MODx.config.connector_url,
+			params: {
+				action: 'browser/file/download',
+				file: filePath,
+				wctx: MODx.ctx || '',
+				source: MODx.config['fileattach.mediasource']
+			},
+			listeners: {
+				'success': { fn: function(r) {
+					if (!Ext.isEmpty(r.object.url)) {
+						location.href = MODx.config.connector_url +
+							'?action=browser/file/download&download=1&file=' +
+							filePath + '&HTTP_MODAUTH=' + MODx.siteId +
+							'&source=' + MODx.config['fileattach.mediasource'] + '&wctx=' + MODx.ctx;
+					}
+				}, scope:this }
+			}
+		});
+
 		return true;
 	},
 
@@ -552,6 +582,18 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			}
 		}
 		return this.processEvent('click', e);
+	},
+
+	// Get first selected record
+	_getSelected: function () {
+		var selected = this.getSelectionModel().getSelections();
+
+		for (var i in selected) {
+			if (!selected.hasOwnProperty(i)) continue;
+			return selected[i].json;
+		}
+
+		return null;
 	},
 
 	// Get list of selected ID
