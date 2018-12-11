@@ -1,5 +1,9 @@
 Changelog for FileAttach.
 
+1.0.10pl3
+==============
+- Make menu router-based, enhances compatibility with 2.3+
+
 1.0.10pl2
 ==============
 - Add file download in manager
