@@ -5,7 +5,7 @@ define('PKG_NAME', 'FileAttach');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
 
 define('PKG_VERSION', '1.0.10');
-define('PKG_RELEASE', 'pl3');
+define('PKG_RELEASE', 'pl4');
 define('PKG_AUTO_INSTALL', true);
 define('PKG_NAMESPACE_PATH', '{core_path}components/' . PKG_NAME_LOWER . '/');
 define('PKG_ASSETS_PATH', '{assets_path}components/' . PKG_NAME_LOWER . '/');
