@@ -67,6 +67,14 @@ $tmp = array(
 		'lexicon' => 'fileattach:setting',
 		'value' => true
 	),
+	'translit' => array(
+		'key' => 'fileattach.translit',
+		'name' => 'setting_fileattach.translit',
+		'description' => 'setting_fileattach.translit_desc',
+		'xtype' => 'combo-boolean',
+		'lexicon' => 'fileattach:setting',
+		'value' => false
+	),
 );
 
 foreach ($tmp as $k => $v) {

@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2019 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -53,6 +53,7 @@ class modFileAttachUploadProcessor extends modProcessor {
 		$this->doc_folders = $this->modx->getOption('fileattach.put_docid');
 		$this->path = $this->modx->getOption('fileattach.files_path');
 		$this->privatemode = $this->modx->getOption('fileattach.private');
+		$this->translit = $this->modx->getOption('fileattach.translit');
 
 		$this->setDefaultProperties(array('docid' => 0));
 
@@ -100,14 +101,18 @@ class modFileAttachUploadProcessor extends modProcessor {
 
 		// Create serie of FileItem objects
 		foreach ($_FILES as $file) {
-			$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+			$filename = $file['name'];
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$ext = strtolower($ext);
+
+			if ($this->translit)
+				$filename = modResource::filterPathSegment($this->modx, $filename);
 
 			// Generate name and check for existence
 			if ($this->privatemode)
 				$this->filename = FileItem::generateName() . ".$ext";
 			else
-				$this->filename = $file['name'];
+				$this->filename = $filename;
 
 			$fullpath = '';
 
@@ -144,7 +149,7 @@ class modFileAttachUploadProcessor extends modProcessor {
 				$fileitem = $this->modx->newObject('FileItem', array(
 					'fid' => $fid,
 					'docid' => $this->getProperty('docid'),
-					'name' => $file['name'],
+					'name' => $filename,
 					'internal_name' => $this->filename,
 					'path' => $this->localpath,
 					'private' => $this->privatemode,
@@ -158,7 +163,7 @@ class modFileAttachUploadProcessor extends modProcessor {
 				$list[] = array(
 					'id' => $fileitem->get('id'),
 					'fid' => $fid,
-					'name' => $file['name']);
+					'name' => $filename);
 			}
 		}
 

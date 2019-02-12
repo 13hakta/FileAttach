@@ -23,3 +23,6 @@ $_lang['setting_fileattach.private_desc'] = 'Сохранять файлы по 
 
 $_lang['setting_fileattach.download'] = 'Считать скачивания';
 $_lang['setting_fileattach.download_desc'] = 'Счет скачиваний увеличивает нагрузку на БД';
+
+$_lang['setting_fileattach.translit'] = 'Транслитерировать файлы';
+$_lang['setting_fileattach.translit_desc'] = 'Транслитерировать имена загружаемых файлов согласно настройкам "Дружественные URL"';
