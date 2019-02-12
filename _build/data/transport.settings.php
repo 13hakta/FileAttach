@@ -9,6 +9,7 @@ $tmp = array(
 		'description' => 'setting_fileattach.mediasource_desc',
 		'xtype' => 'modx-combo-source',
 		'lexicon' => 'fileattach:setting',
+		'area' => 'file',
 		'value' => 1
 	),
 	'files_path' => array(
@@ -17,6 +18,7 @@ $tmp = array(
 		'description' => 'setting_fileattach.files_path_desc',
 		'xtype' => 'textfield',
 		'lexicon' => 'fileattach:setting',
+		'area' => 'file',
 		'value' => '/'
 	),
 	'templates' => array(
@@ -33,6 +35,7 @@ $tmp = array(
 		'description' => 'setting_fileattach.user_folders_desc',
 		'xtype' => 'combo-boolean',
 		'lexicon' => 'fileattach:setting',
+		'area' => 'file',
 		'value' => false
 	),
 	'calchash' => array(
@@ -49,6 +52,7 @@ $tmp = array(
 		'description' => 'setting_fileattach.put_docid_desc',
 		'xtype' => 'combo-boolean',
 		'lexicon' => 'fileattach:setting',
+		'area' => 'file',
 		'value' => false
 	),
 	'private' => array(
@@ -57,6 +61,7 @@ $tmp = array(
 		'description' => 'setting_fileattach.private_desc',
 		'xtype' => 'combo-boolean',
 		'lexicon' => 'fileattach:setting',
+		'area' => 'file',
 		'value' => false
 	),
 	'download' => array(
