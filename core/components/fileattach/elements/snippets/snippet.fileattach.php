@@ -42,6 +42,7 @@ $showHASH = $modx->getOption('showHASH', $scriptProperties, false);
 $showSize = $modx->getOption('showSize', $scriptProperties, false);
 $showExt = $modx->getOption('showExt', $scriptProperties, false);
 $showTime = $modx->getOption('showTime', $scriptProperties, false);
+$ext = $modx->getOption('ext', $scriptProperties, '');
 $tag = $modx->getOption('tag', $scriptProperties, '');
 $groups = $modx->getOption('groups', $scriptProperties, '');
 
@@ -128,7 +129,9 @@ foreach ($items as $item) {
 	if ($showExt) {
 		$itemArr['ext'] = strtolower(
 			pathinfo($itemArr['name'], PATHINFO_EXTENSION));
-		}
+
+		if (($ext != '') && ($ext != $itemArr['ext'])) continue;
+	}
 
 	$list[] = $modx->getChunk($tpl, $itemArr);
 }
