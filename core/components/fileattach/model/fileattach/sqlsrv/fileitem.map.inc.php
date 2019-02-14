@@ -12,6 +12,7 @@ $xpdo_meta_map['FileItem']= array (
     'path' => '',
     'description' => '',
     'hash' => '',
+    'tag' => '',
     'private' => 0,
     'download' => 0,
     'docid' => 0,
@@ -61,6 +62,14 @@ $xpdo_meta_map['FileItem']= array (
       'default' => '',
     ),
     'hash' => 
+    array (
+      'dbtype' => 'nvarchar',
+      'precision' => '50',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
+    ),
+    'tag' => 
     array (
       'dbtype' => 'nvarchar',
       'precision' => '50',
