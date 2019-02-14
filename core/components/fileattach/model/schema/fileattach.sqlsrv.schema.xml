@@ -32,6 +32,5 @@
 		<aggregate alias="Document" class="modResource" local="docid" foreign="id" cardinality="one" owner="foreign"/>
 	</object>
 
-	<object class="FileAttachMediaSource" extends="modMediaSource">
-	</object>
+	<object class="FileAttachMediaSource" extends="modMediaSource"/>
 </model>

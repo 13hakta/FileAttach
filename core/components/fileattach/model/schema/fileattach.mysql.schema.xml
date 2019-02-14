@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model package="fileattach" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="fileattach"
-	   version="1.1">
+	version="1.1">
 
 	<object class="FileItem" table="files" extends="xPDOSimpleObject">
 		<field key="fid" dbtype="varchar" precision="40" phptype="string" null="false" default=""/>
@@ -33,6 +33,5 @@
 		<aggregate alias="Document" class="modResource" local="docid" foreign="id" cardinality="one" owner="foreign"/>
 	</object>
 
-	<object class="FileAttachMediaSource" extends="modMediaSource">
-	</object>
+	<object class="FileAttachMediaSource" extends="modMediaSource"/>
 </model>
