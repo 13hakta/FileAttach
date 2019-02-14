@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2019 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -42,6 +42,7 @@ $showHASH = $modx->getOption('showHASH', $scriptProperties, false);
 $showSize = $modx->getOption('showSize', $scriptProperties, false);
 $showExt = $modx->getOption('showExt', $scriptProperties, false);
 $showTime = $modx->getOption('showTime', $scriptProperties, false);
+$tag = $modx->getOption('tag', $scriptProperties, '');
 $groups = $modx->getOption('groups', $scriptProperties, '');
 
 $offset = $modx->getOption('offset', $scriptProperties, 0);
@@ -88,6 +89,9 @@ else
 	$c->select($modx->getSelectColumns('FileItem', 'FileItem', '', array('hash'), true));
 
 $c->where(array('docid' => ($resource > 0)? $resource : $modx->resource->get('id')));
+
+if ($tag != '')
+	$c->where(array('tag' => $tag));
 
 if (!empty($limit)) {
 	$total = $modx->getCount('FileItem', $c);

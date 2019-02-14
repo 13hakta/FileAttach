@@ -9,6 +9,7 @@ $_lang['fileattach.downloads'] = 'Downloads';
 $_lang['fileattach.fid'] = 'File ID';
 $_lang['fileattach.hash'] = 'Checksum SHA1';
 $_lang['fileattach.size'] = 'Size';
+$_lang['fileattach.tag'] = 'Tag';
 
 $_lang['fileattach.open'] = 'Open access';
 $_lang['fileattach.private'] = 'Close access';

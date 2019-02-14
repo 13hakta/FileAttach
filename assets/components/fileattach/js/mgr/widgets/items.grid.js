@@ -72,6 +72,12 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 			id: config.id + '-description',
 			anchor: '100%',
 		}, {
+			xtype: 'textfield',
+			fieldLabel: _('fileattach.tag'),
+			id: config.id + '-tag',
+			name: 'tag',
+			anchor: '100%'
+		}, {
 			xtype: 'statictextfield',
 			fieldLabel: _('fileattach.hash'),
 			id: config.id + '-hash',
@@ -439,7 +445,7 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 
 	// Define visible fields
 	getFields: function (config) {
-		return ['id', 'name', 'description', 'docid', 'download', 'private', 'pagetitle', 'username', 'rank'];
+		return ['id', 'name', 'description', 'docid', 'download', 'private', 'pagetitle', 'username', 'rank', 'tag'];
 	},
 
 	// Define columns
@@ -472,6 +478,12 @@ Ext.extend(FileAttach.grid.Items, MODx.grid.Grid, {
 			width: 50,
 			sortable: true,
 			renderer: FileAttach.utils.renderBoolean
+		}, {
+			header: _('tag'),
+			dataIndex: 'tag',
+			width: 50,
+			hidden: true,
+			sortable: true
 		}];
 
 		if (!FileAttach.config.docid)

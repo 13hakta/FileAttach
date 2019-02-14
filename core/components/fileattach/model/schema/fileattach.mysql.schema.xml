@@ -9,6 +9,7 @@
 		<field key="path" dbtype="varchar" precision="100" phptype="string" null="false" default=""/>
 		<field key="description" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
 		<field key="hash" dbtype="varchar" precision="50" phptype="string" null="false" default=""/>
+		<field key="tag" dbtype="varchar" precision="50" phptype="string" null="false" default=""/>
 
 		<field key="private" dbtype="tinyint" precision="1" phptype="boolean" attributes="unsigned" null="false" default="0"/>
 		<field key="download" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>

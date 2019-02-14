@@ -14,6 +14,7 @@ $_lang['fileattach.reset'] = 'Сбросить счетчик';
 $_lang['fileattach.fid'] = 'ID файла';
 $_lang['fileattach.hash'] = 'Контрольная сумма SHA1';
 $_lang['fileattach.size'] = 'Размер';
+$_lang['fileattach.tag'] = 'Метка';
 
 $_lang['fileattach.item_err_name'] = 'Вы должны указать имя файла.';
 $_lang['fileattach.item_err_ae'] = 'файл с таким именем уже существует.';
