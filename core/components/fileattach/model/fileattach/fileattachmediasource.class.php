@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2019 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -138,6 +138,8 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 		$thumbnailQuality = $this->getOption('thumbnailQuality', $properties, 90);
 		$thumbWidth = $this->xpdo->context->getOption('filemanager_thumb_width', 100);
 		$thumbHeight = $this->xpdo->context->getOption('filemanager_thumb_height', 80);
+		$imageWidth = $this->ctx->getOption('filemanager_image_width', 800);
+		$imageHeight = $this->ctx->getOption('filemanager_image_height', 600);
 
 		$thumb_default = $this->xpdo->context->getOption('manager_url', MODX_MANAGER_URL) . 'templates/default/images/restyle/nopreview.jpg';
 		$thumbUrl = $this->xpdo->context->getOption('connectors_url', MODX_CONNECTORS_URL) . 'system/phpthumb.php?';
@@ -189,11 +191,24 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 						'far' => 'C',
 						'HTTP_MODAUTH' => $modAuth,
 						'wctx' => $this->xpdo->context->get('key'),
-						'source' => $this->parentSourceID,
+						'source' => $this->parentSourceID
+					));
+
+					$imageQuery = http_build_query(array(
+						'src' => $item->getPath(),
+						'w' => $imageWidth,
+						'h' => $imageHeight,
+						'f' => $thumbnailType,
+						'q' => $thumbnailQuality,
+						'far' => 'C',
+						'HTTP_MODAUTH' => $modAuth,
+						'wctx' => $this->xpdo->context->get('key'),
+						'source' => $this->parentSourceID
 					));
 
 					$thumb = $thumbUrl . urldecode($thumbQuery);
-					$listItem['image'] = $this->baseUrl . $path . $file;
+
+					$listItem['image'] = $thumbUrl . urldecode($imageQuery);
 				} else {
 					$preview = 0;
 					$thumb = $thumb_default;
