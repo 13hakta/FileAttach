@@ -46,7 +46,7 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 		$this->parentSourceID = $this->xpdo->getOption('fileattach.mediasource', null, 1);
 		$this->files_path = $this->xpdo->getOption('fileattach.files_path');
 
-		$this->xpdo->lexicon->load('fileattach:default','fileattach:source');
+		$this->xpdo->lexicon->load('fileattach:default', 'fileattach:source');
 
 		return true;
 	}
@@ -67,7 +67,7 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 			$c = $this->xpdo->newQuery('modResource');
 
 			$c->select('modResource.id,modResource.pagetitle');
-			$c->rightJoin('FileItem','FileItem', 'modResource.id=FileItem.docid'); 
+			$c->rightJoin('FileItem', 'FileItem', 'modResource.id=FileItem.docid'); 
 			$c->sortby('modResource.pagetitle', 'ASC');
 			$c->groupby('modResource.id');
 
@@ -88,10 +88,10 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 
 			/* get items */
 			$c = $this->xpdo->newQuery('FileItem');
-			$c->sortby('name','ASC');
+			$c->sortby('name', 'ASC');
 			$c->where(array('docid' => $id));
 
-			$items = $this->xpdo->getCollection('FileItem',$c);
+			$items = $this->xpdo->getCollection('FileItem', $c);
 
 			$t_description = $this->xpdo->lexicon('description');
 			$t_download = $this->xpdo->lexicon('fileattach.downloads');
@@ -152,16 +152,16 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 
 			/* get items */
 			$c = $this->xpdo->newQuery('FileItem');
-			$c->sortby('name','ASC');
+			$c->sortby('name', 'ASC');
 			$c->where(array('docid' => $id));
 
-			$items = $this->xpdo->getCollection('FileItem',$c);
+			$items = $this->xpdo->getCollection('FileItem', $c);
 
 			/** @var FileItem $item */
 			foreach ($items as $item) {
-			$ext = strtolower(pathinfo($item->get('internal_name'), PATHINFO_EXTENSION));
+				$ext = strtolower(pathinfo($item->get('internal_name'), PATHINFO_EXTENSION));
 
-			$listItem = array(
+				$listItem = array(
 					'id' => $item->get('id'),
 					'name' => $item->get('name'),
 					'ext' => $ext,
@@ -175,7 +175,7 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 					'disabled' => false
 				);
 
-		if (in_array($ext, $imagesExts)) {
+				if (in_array($ext, $imagesExts)) {
 					/* get thumbnail */
 					$preview = 1;
 
