@@ -75,7 +75,7 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 			/** @var modResource $resource */
 			foreach ($resources as $resource) {
 				$list[] = array(
-					'id' => $resource->get('docid'),
+					'id' => $resource->get('id'),
 					'text' => $resource->get('pagetitle') . ' (' . $resource->get('id') . ')',
 					'iconCls' => 'icon icon-folder',
 					'leaf' => false
