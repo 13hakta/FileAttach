@@ -91,49 +91,51 @@ Ext.extend(FileAttach.window.UpdateItem, MODx.Window, {
 			id: config.id + '-fid',
 			anchor: '100%',
 		}];
-	
-	if (config.record.object.hash == '')
+
+		if (config.record.object.hash == '')
+			fields.push([{
+				xtype: 'button',
+				text: _('fileattach.calculate'),
+				style: 'margin-top: 15px;',
+				handler: this.calcHash,
+				scope: this
+			}]);
+
 		fields.push([{
-			xtype: 'button',
-			text: _('fileattach.calculate'),
-			handler: this.calcHash,
-			scope: this
+			xtype: 'xcheckbox',
+			id: config.id + '-private',
+			boxLabel: _('private'),
+			hideLabel: true,
+			name: 'private'
 		}]);
 
-	fields.push([{
-		xtype: 'xcheckbox',
-		id: config.id + '-private',
-		boxLabel: _('private'),
-		hideLabel: true,
-		name: 'private'
-	}]);
+		if (FileAttach.config.docid > 0)
+			fields.push({xtype: 'hidden', name: 'docid', id: config.id + '-docid'});
+		else {
+			fields.unshift({
+				xtype: 'modx-combo',
+				id: config.id + '-docid',
+				fieldLabel: _('resource'),
+				name: 'docid',
+				hiddenName: 'docid',
+				url: FileAttach.config.connectorUrl,
+				baseParams: {
+					action: 'mgr/searchres'
+				},
+				fields: ['id','pagetitle','description'],
+				displayField: 'pagetitle',
+				anchor: '100%',
+				pageSize: 10,
+				editable: true,
+				typeAhead: true,
+				allowBlank: false,
+				forceSelection: true,
+				tpl: new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item"><span style="font-weight: bold">{pagetitle}</span>',
+					'<tpl if="description"><br/><span style="font-style:italic">{description}</span></tpl>', '</div></tpl>')
+			});
+		}
 
-	if (FileAttach.config.docid > 0)
-		fields.push({xtype: 'hidden', name: 'docid', id: config.id + '-docid'});
-	else {
-		fields.unshift({
-			xtype: 'modx-combo',
-			id: config.id + '-docid',
-			fieldLabel: _('resource'),
-			name: 'docid',
-			hiddenName: 'docid',
-			url: FileAttach.config.connectorUrl,
-			baseParams: {
-				action: 'mgr/searchres'
-			},
-			fields: ['id','pagetitle','description'],
-			displayField: 'pagetitle',
-			anchor: '100%',
-			pageSize: 10,
-			editable: true,
-			typeAhead: true,
-			allowBlank: false,
-			forceSelection: true,
-			tpl: new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item"><span style="font-weight: bold">{pagetitle}</span>',
-				'<tpl if="description"><br/><span style="font-style:italic">{description}</span></tpl>', '</div></tpl>')
-		});
-	}
-	return fields;
+		return fields;
 	}
 });
 Ext.reg('fileattach-item-window-update', FileAttach.window.UpdateItem);
