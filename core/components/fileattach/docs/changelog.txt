@@ -1,5 +1,11 @@
 Changelog for FileAttach.
 
+1.0.11pl
+==============
+- Fix/update media source
+- Add tag support
+- Add extension filter
+
 1.0.10pl4
 ==============
 - Add internal file translit support
