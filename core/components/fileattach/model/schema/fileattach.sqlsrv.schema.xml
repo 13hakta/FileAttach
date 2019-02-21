@@ -7,7 +7,7 @@
 		<field key="internal_name" dbtype="nvarchar" precision="255" phptype="string" null="false" default=""/>
 		<field key="path" dbtype="nvarchar" precision="100" phptype="string" null="false" default=""/>
 		<field key="description" dbtype="nvarchar" precision="255" phptype="string" null="false" default=""/>
-		<field key="hash" dbtype="nvarchar" precision="50" phptype="string" null="false" default=""/>
+		<field key="hash" dbtype="nvarchar" precision="50" phptype="string" null="true"/>
 		<field key="tag" dbtype="nvarchar" precision="50" phptype="string" null="false" default=""/>
 
 		<field key="private" dbtype="bit" phptype="boolean" null="false" default="0"/>

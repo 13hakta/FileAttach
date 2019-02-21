@@ -54,6 +54,7 @@ if ($object->xpdo) {
 
 					if ($version < 1011) {
 						$manager->addField('FileItem', 'tag', array('after' => 'hash'));
+						$manager->alterField('FileItem', 'hash');
 					}
 
 					$modx->setLogLevel($oldLogLevel);
