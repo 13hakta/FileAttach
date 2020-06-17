@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2020 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -178,17 +178,26 @@ class FileItem extends xPDOSimpleObject {
 
 
 	/**
-	 * Remove file and object
-	 *
-	 * @param array $ancestors
+	 * Remove file
 	 */
-	function remove(array $ancestors= array ()) {
+	function removeFile() {
 		$filename = $this->getPath();
+
 		if (!empty($filename)) {
 			$ms = $this->getMediaSource();
 			if (!@$ms->removeObject($filename))
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] An error occurred while trying to remove the attachment file at: ' . $filename);
 		}
+	}
+
+
+	/**
+	 * Remove file and object
+	 *
+	 * @param array $ancestors
+	 */
+	function remove(array $ancestors= array ()) {
+		$this->removeFile();
 
 		$this->xpdo->invokeEvent('faOnRemove', array(
 			'id' => $this->get('id'),
