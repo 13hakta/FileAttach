@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2017 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2020 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -95,12 +95,17 @@ class FileItemDownloadProcessor extends modObjectProcessor {
 			}
 
 			// Put headers
+			$inline = (int) $this->getProperty('inline');
+			if (!$inline) {
+				header('Content-Type: application/force-download');
+				header('Content-Disposition: attachment; filename="' . $this->object->get('name') . '"');
+				$perform_count = false;
+			}
+
 			header('Last-Modified: ' . gmdate('r', $mtime));
 			header('ETag: ' . sprintf('%x-%x-%x', fileinode($filename), $filesize, $mtime));
 			header('Accept-Ranges: bytes');
-			header('Content-Type: application/force-download');
 			header('Content-Length: ' . $remain);
-			header('Content-Disposition: attachment; filename="' . $this->object->get('name') . '"');
 			header('Connection: close');
 
 			if ($range) {
