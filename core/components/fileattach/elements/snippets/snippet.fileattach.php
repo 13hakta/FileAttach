@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2019 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2020 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -32,6 +32,7 @@ if (!$FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOptio
 $tpl = $modx->getOption('tpl', $scriptProperties, 'FileItemTpl');
 $sortby = $modx->getOption('sortBy', $scriptProperties, 'name');
 $sortdir = $modx->getOption('sortDir', $scriptProperties, 'ASC');
+$inline = $modx->getOption('inline', $scriptProperties, false);
 $limit = $modx->getOption('limit', $scriptProperties, 0);
 $outputSeparator = $modx->getOption('outputSeparator', $scriptProperties, "\n");
 $toPlaceholder = $modx->getOption('toPlaceholder', $scriptProperties, false);
@@ -78,7 +79,12 @@ if ($makeUrl) {
 	}
 
 	$private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
-	$private_url .= 'connector.php?action=web/download&ctx=' . $modx->context->key . '&fid=';
+	$private_url .= 'connector.php?action=web/download&ctx=' . $modx->context->key;
+
+	if ($inline)
+		$private_url .= '&inline=1';
+
+	$private_url .= '&fid=';
 }
 
 // Build query

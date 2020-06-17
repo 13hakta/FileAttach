@@ -19,6 +19,10 @@ $tmp = array(
 		),
 		'value' => 'ASC'
 	),
+	'inline' => array(
+		'type' => 'combo-boolean',
+		'value' => false,
+	),
 	'limit' => array(
 		'type' => 'numberfield',
 		'value' => 0,
