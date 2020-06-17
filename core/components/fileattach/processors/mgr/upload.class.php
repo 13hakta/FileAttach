@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2019 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2020 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -164,8 +164,15 @@ class modFileAttachUploadProcessor extends modProcessor {
 					'id' => $fileitem->get('id'),
 					'fid' => $fid,
 					'name' => $filename);
+
+				$this->modx->invokeEvent('faOnUploadItem', array(
+					'id' => $this->getProperty('docid'),
+					'object' => &$fileitem)
+				);
 			}
 		}
+
+		$this->modx->invokeEvent('faOnUpload', array('id' => $this->getProperty('docid')));
 
 		return $this->outputArray($list, count($list));
 	}

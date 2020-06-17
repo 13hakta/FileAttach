@@ -4,6 +4,8 @@ $events = array();
 
 $tmp = array(
     'faOnRemove',
+    'faOnUploadItem',
+    'faOnUpload'
 );
 
 foreach ($tmp as $k => $v) {
