@@ -44,6 +44,7 @@ functionality. This Extra contains files and the setup to do the following:
 
 - Integrates a custom table of "FileItem"
 - A snippet listing Items sorted by name and templated with a chunk
+- A snippet showing link to get inline content
 - A custom manager page to manage FileItem on
 
 If you do not require all of this functionality, simply remove it and change the
