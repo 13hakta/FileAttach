@@ -7,6 +7,10 @@ $tmp = array(
 		'file' => 'fileattach',
 		'description' => '',
 	),
+	'FileLink' => array(
+		'file' => 'filelink',
+		'description' => '',
+	),
 );
 
 foreach ($tmp as $k => $v) {
