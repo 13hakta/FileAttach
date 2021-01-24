@@ -50,6 +50,9 @@ $groups = $modx->getOption('groups', $scriptProperties, '');
 $offset = $modx->getOption('offset', $scriptProperties, 0);
 $totalVar = $modx->getOption('totalVar', $scriptProperties, 'total');
 
+$ext = str_replace(' ', '', $ext);
+$ext = explode(",", $ext);
+
 // Check access
 if ($groups != '') {
 	// Forbid access for non-authorized visitor
@@ -136,7 +139,7 @@ foreach ($items as $item) {
 		$itemArr['ext'] = strtolower(
 			pathinfo($itemArr['name'], PATHINFO_EXTENSION));
 
-		if (($ext != '') && ($ext != $itemArr['ext'])) continue;
+		if (($ext != '') && (in_array($itemArr['ext'], $ext)) == false) continue;
 	}
 
 	$list[] = $modx->getChunk($tpl, $itemArr);
