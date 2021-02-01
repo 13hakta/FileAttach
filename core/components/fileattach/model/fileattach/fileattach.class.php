@@ -29,11 +29,18 @@ class FileAttach {
 	/* @var modX $modx */
 	public $modx;
 
+    /** @var array $config */
+    public $config = array();
+
+    /** @var pdoFetch $pdoTools */
+    public $pdoTools = null;
+
 	/**
 	 * @param modX $modx
 	 * @param array $config
 	 */
 	function __construct(modX &$modx, array $config = array()) {
+
 		$this->modx =& $modx;
 
 		$corePath = $this->modx->getOption('fileattach.core_path', $config, $this->modx->getOption('core_path') . 'components/fileattach/');
@@ -56,5 +63,15 @@ class FileAttach {
 
 		$this->modx->addPackage('fileattach', $this->config['modelPath']);
 		$this->modx->lexicon->load('fileattach:default');
-	}
+        $this->pdoTools = $this->modx->getService('pdoTools');
+
+        $fqn = $this->modx->getOption('pdoTools.class', null, 'pdotools.pdotools', true);
+        $path = $this->modx->getOption('pdofetch_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
+
+        if($pdoClass = $modx->loadClass($fqn, $path, false, true)) {
+            $this->pdoTools = new $pdoClass($modx, $config);
+        } else {
+            $this->pdoTools =& $modx;
+        }
+    }
 }

@@ -139,7 +139,7 @@ foreach ($items as $item) {
 		if (($ext != '') && ($ext != $itemArr['ext'])) continue;
 	}
 
-	$list[] = $modx->getChunk($tpl, $itemArr);
+	$list[] = $FileAttach->pdoTools->getChunk($tpl, $itemArr);
 }
 
 // Output
