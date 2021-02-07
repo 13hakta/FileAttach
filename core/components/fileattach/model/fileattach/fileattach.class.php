@@ -29,6 +29,12 @@ class FileAttach {
 	/* @var modX $modx */
 	public $modx;
 
+    /** @var array $config */
+    public $config = array();
+
+    /** @var pdoFetch $pdoTools */
+    public $pdoTools = null;
+
 	/**
 	 * @param modX $modx
 	 * @param array $config
@@ -56,5 +62,9 @@ class FileAttach {
 
 		$this->modx->addPackage('fileattach', $this->config['modelPath']);
 		$this->modx->lexicon->load('fileattach:default');
-	}
+
+        if (class_exists('pdoTools') && !is_object($this->pdoTools)) {
+            $this->pdoTools = $this->modx->getService('pdoTools');
+        }
+    }
 }

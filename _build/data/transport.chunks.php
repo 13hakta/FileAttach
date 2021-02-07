@@ -7,6 +7,10 @@ $tmp = array(
 		'file' => 'item',
 		'description' => '',
 	),
+    'FileAttachFenomTpl' => array(
+        'file' => 'item_fenom',
+        'description' => 'Пример оформления чанка с помощью шаблонизатора Fenom'
+    ),
 );
 
 // Save chunks for setup options
