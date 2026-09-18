@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model package="fileattach" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="fileattach"
-	version="1.1">
+<model package="FileAttach\Model" baseClass="xPDO\Om\xPDOObject" platform="mysql" defaultEngine="InnoDB" phpdoc-package="fileattach"
+	version="3.0">
 
-	<object class="FileItem" table="files" extends="xPDOSimpleObject">
+	<object class="FileItem" table="files" extends="xPDO\Om\xPDOSimpleObject">
 		<field key="fid" dbtype="varchar" precision="40" phptype="string" null="false" default=""/>
 		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
 		<field key="internal_name" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
@@ -31,8 +31,8 @@
 			<column key="uid" length="" collation="A" null="false"/>
 		</index>
 
-		<aggregate alias="Document" class="modResource" local="docid" foreign="id" cardinality="one" owner="foreign"/>
+		<aggregate alias="Document" class="MODX\Revolution\modResource" local="docid" foreign="id" cardinality="one" owner="foreign"/>
 	</object>
 
-	<object class="FileAttachMediaSource" extends="modMediaSource"/>
+	<object class="FileAttachMediaSource" extends="MODX\Revolution\Sources\modMediaSource"/>
 </model>

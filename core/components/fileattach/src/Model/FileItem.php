@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2020 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -20,10 +20,19 @@
  * Suite 330, Boston, MA 02111-1307 USA
  *
  * @package FileAttach
-*/
+ */
+
+namespace FileAttach\Model;
+
+use MODX\Revolution\Sources\modMediaSource;
+use xPDO\Om\xPDOSimpleObject;
+use xPDO\xPDO;
 
 class FileItem extends xPDOSimpleObject {
+	/** @var modMediaSource|false $source */
 	public $source = false;
+
+	/** @var string $files_path */
 	public $files_path = '';
 
 
@@ -32,8 +41,8 @@ class FileItem extends xPDOSimpleObject {
 	 *
 	 * {@inheritdoc}
 	 */
-	function __construct(& $xpdo) {
-		parent :: __construct($xpdo);
+	public function __construct(xPDO & $xpdo) {
+		parent::__construct($xpdo);
 
 		$this->files_path = $this->xpdo->getOption('fileattach.files_path');
 	}
@@ -42,7 +51,7 @@ class FileItem extends xPDOSimpleObject {
 	/**
 	 * Get the source, preparing it for usage.
 	 *
-	 * @return source
+	 * @return modMediaSource|null
 	 */
 	private function getMediaSource() {
 		if ($this->source)
@@ -51,7 +60,14 @@ class FileItem extends xPDOSimpleObject {
 		//get modMediaSource
 		$mediaSource = $this->xpdo->getOption('fileattach.mediasource', null, 1);
 
-		$def = $this->xpdo->getObject('sources.modMediaSource', array('id' => $mediaSource));
+		/** @var modMediaSource|null $def */
+		$def = $this->xpdo->getObject(modMediaSource::class, ['id' => $mediaSource]);
+
+		if (!$def) {
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, '[FileAttach] Could not load media source: ' . $mediaSource);
+			return null;
+		}
+
 		$def->initialize();
 		$this->source = $def;
 
@@ -66,6 +82,9 @@ class FileItem extends xPDOSimpleObject {
 	 */
 	function getUrl() {
 		$ms = $this->getMediaSource();
+		if (!$ms)
+			return '';
+
 		return $ms->getBaseUrl() . $this->getPath();
 	}
 
@@ -87,6 +106,9 @@ class FileItem extends xPDOSimpleObject {
 	 */
 	function getFullPath() {
 		$ms = $this->getMediaSource();
+		if (!$ms)
+			return '';
+
 		return $ms->getBasePath() . $this->getPath();
 	}
 
@@ -98,8 +120,13 @@ class FileItem extends xPDOSimpleObject {
 	 */
 	function getSize() {
 		$ms = $this->getMediaSource();
-		$f = $ms->fileHandler->make($this->getFullPath(), array(), 'modFile');
-		return $f->getSize();
+		if (!$ms)
+			return 0;
+
+		// Flysystem metadata via media source
+		$meta = $ms->getMetaData($this->getPath());
+
+		return ($meta !== false) ? (int) $meta['size'] : 0;
 	}
 
 
@@ -113,6 +140,8 @@ class FileItem extends xPDOSimpleObject {
 		$local_path = $this->files_path . $this->get('path');
 
 		$ms = $this->getMediaSource();
+		if (!$ms)
+			return false;
 
 		if ($ms->renameObject($local_path . $this->get('internal_name'), $newname)) {
 			$this->set('name', $newname);
@@ -122,7 +151,6 @@ class FileItem extends xPDOSimpleObject {
 
 		return true;
 	}
-
 
 	/**
 	 * Set privacy mode
@@ -135,31 +163,30 @@ class FileItem extends xPDOSimpleObject {
 			return true;
 
 		$ms = $this->getMediaSource();
+		if (!$ms)
+			return false;
 
 		$local_path = $this->files_path . $this->get('path');
-		$path = $ms->getBasePath() . $local_path;
 
 		$ext = pathinfo($this->get('name'), PATHINFO_EXTENSION);
 		$ext = strtolower($ext);
 
 		// Generate name and check for existence
 		if ($state)
-			$filename = $this->generateName() . ".$ext";
+			$filename = static::generateName() . ".$ext";
 		else
 			$filename = $this->get('name');
 
-		$fullpath = '';
-
 		// Check intersection with existing
-		while(1) {
-			$f = $ms->fileHandler->make($path . '/' . $filename, array(), 'modFile');
-			if (!$f->exists()) break;
+		while (true) {
+			$meta = $ms->getMetaData($local_path . $filename);
+			if ($meta === false) break;
 
 			// Generate new name again
 			if ($state)
-				$filename = $this->generateName() . ".$ext";
+				$filename = static::generateName() . ".$ext";
 			else
-				$filename = $this->generateName(4) . '_' . $filename;
+				$filename = static::generateName(4) . '_' . $filename;
 		}
 
 		if ($ms->renameObject(
@@ -185,7 +212,7 @@ class FileItem extends xPDOSimpleObject {
 
 		if (!empty($filename)) {
 			$ms = $this->getMediaSource();
-			if (!@$ms->removeObject($filename))
+			if ($ms && !@$ms->removeObject($filename))
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR,'[FileAttach] An error occurred while trying to remove the attachment file at: ' . $filename);
 		}
 	}
@@ -196,19 +223,20 @@ class FileItem extends xPDOSimpleObject {
 	 *
 	 * @param array $ancestors
 	 */
-	function remove(array $ancestors= array ()) {
+	function remove(array $ancestors = []) {
 		$this->removeFile();
 
-		$this->xpdo->invokeEvent('faOnRemove', array(
+		$this->xpdo->invokeEvent('faOnRemove', [
 			'id' => $this->get('id'),
-			'object' => &$this)
-		);
+			'object' => &$this
+		]);
 
 		return parent::remove($ancestors);
 	}
 
 
-	/* Generate Filename
+	/**
+	 * Generate Filename
 	 *
 	 * @param   integer  $length		Length of generated sequence
 	 * @return  string
@@ -220,19 +248,20 @@ class FileItem extends xPDOSimpleObject {
 		$newname = '';
 
 		for ($i = 0; $i < $length; $i++)
-			$newname .= $characters[rand(0, $charactersLength - 1)];
+			$newname .= $characters[random_int(0, $charactersLength - 1)];
 
 		return $newname;
 	}
 
 
-	/* Sanitize Filename
+	/**
+	 * Sanitize Filename
 	 *
 	 * @param   string  $str		Input file name
 	 * @return  string
 	 */
 	static function sanitizeName($str) {
-		$bad = array(
+		$bad = [
 			'../', '<!--', '-->', '<', '>',
 			"'", '"', '&', '$', '#',
 			'{', '}', '[', ']', '=',
@@ -250,8 +279,9 @@ class FileItem extends xPDOSimpleObject {
 			'%3b',	// ;
 			'%3d',	// =
 			'/', './', '\\'
-		);
+		];
 
 		return stripslashes(str_replace($bad, '', $str));
 	}
 }
+

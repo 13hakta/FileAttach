@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2019 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -20,15 +20,14 @@
  * Suite 330, Boston, MA 02111-1307 USA
  *
  * @package FileAttach
-*/
+ */
 
-class FileAttachMediaSource extends modMediaSource implements modMediaSourceInterface {
-	/** @var FileAttach $fileattach */
-	public $fileattach;
+namespace FileAttach\Model;
 
-	/** @var string $files_path */
-	private $files_path;
+use MODX\Revolution\modResource;
+use MODX\Revolution\Sources\modMediaSource;
 
+class FileAttachMediaSource extends modMediaSource {
 	/** @var int $parentSourceID */
 	private $parentSourceID;
 
@@ -39,12 +38,11 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 	 * @return boolean
 	 */
 	public function initialize() {
-		$this->fileattach = $this->xpdo->getService('fileattach', 'FileAttach', $this->xpdo->getOption('fileattach.core_path', null, $this->xpdo->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/');
-		if (!($this->fileattach instanceof FileAttach))
+		// Set up the source filesystem (Flysystem) from its own properties
+		if (!parent::initialize())
 			return false;
 
 		$this->parentSourceID = $this->xpdo->getOption('fileattach.mediasource', null, 1);
-		$this->files_path = $this->xpdo->getOption('fileattach.files_path');
 
 		$this->xpdo->lexicon->load('fileattach:default', 'fileattach:source');
 
@@ -53,33 +51,33 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 
 
 	/**
-	 * Return an array of containers at this current level in the container structure. Used for the tree
-	 * navigation on the files tree.
+	 * Return an array of containers at this current level in the container
+	 * structure. Used for the tree navigation on the files tree.
 	 *
 	 * @param string $path
 	 * @return array
 	 */
 	public function getContainerList($path) {
-		$properties = $this->getPropertyList();
-		$list = array();
+		$list = [];
 
 		if ($path == '/') {
-			$c = $this->xpdo->newQuery('modResource');
+			$c = $this->xpdo->newQuery(modResource::class);
 
 			$c->select('modResource.id,modResource.pagetitle');
-			$c->rightJoin('FileItem', 'FileItem', 'modResource.id=FileItem.docid'); 
+			$c->rightJoin(FileItem::class, 'FileItem', 'modResource.id=FileItem.docid');
 			$c->sortby('modResource.pagetitle', 'ASC');
 			$c->groupby('modResource.id');
 
-			$resources = $this->xpdo->getCollection('modResource', $c);
+			$resources = $this->xpdo->getCollection(modResource::class, $c);
+
 			/** @var modResource $resource */
 			foreach ($resources as $resource) {
-				$list[] = array(
+				$list[] = [
 					'id' => $resource->get('id'),
 					'text' => $resource->get('pagetitle') . ' (' . $resource->get('id') . ')',
 					'iconCls' => 'icon icon-folder',
 					'leaf' => false
-				);
+				];
 			}
 
 			return $list;
@@ -87,11 +85,11 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 			$id = (int)$path;
 
 			/* get items */
-			$c = $this->xpdo->newQuery('FileItem');
+			$c = $this->xpdo->newQuery(FileItem::class);
 			$c->sortby('name', 'ASC');
-			$c->where(array('docid' => $id));
+			$c->where(['docid' => $id]);
 
-			$items = $this->xpdo->getCollection('FileItem', $c);
+			$items = $this->xpdo->getCollection(FileItem::class, $c);
 
 			$t_description = $this->xpdo->lexicon('description');
 			$t_download = $this->xpdo->lexicon('fileattach.downloads');
@@ -103,17 +101,17 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 				$ext = strtolower(pathinfo($item->get('internal_name'), PATHINFO_EXTENSION));
 
 				$tip = $t_description . ': ' . $item->get('description') . '<br/>' .
-				$t_download . ': ' . $item->get('download') . '<br/>' .
-				$t_size . ': ' . $item->getSize() . '<br/>' .
-				$t_hash . ': ' . $item->get('hash');
+					$t_download . ': ' . $item->get('download') . '<br/>' .
+					$t_size . ': ' . $item->getSize() . '<br/>' .
+					$t_hash . ': ' . $item->get('hash');
 
-				$list[] = array(
+				$list[] = [
 					'id' => $item->get('id'),
 					'text' => $item->get('name'),
 					'iconCls' => 'icon icon-file icon-' . $ext . (($item->get('private'))? ' icon-access' : ''),
 					'qtip' => $tip,
 					'leaf' => true
-				);
+				];
 			}
 
 			return $list;
@@ -122,7 +120,8 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 
 
 	/**
-	 * Return a detailed list of objects in a specific path. Used for thumbnails in the Browser.
+	 * Return a detailed list of objects in a specific path.
+	 * Used for thumbnails in the Browser.
 	 *
 	 * @param string $path
 	 * @return array
@@ -130,7 +129,7 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 	public function getObjectsInContainer($path) {
 		// Initialize config
 		$properties = $this->getPropertyList();
-		$list = array();
+		$list = [];
 
 		$modAuth = $this->xpdo->user->getUserToken($this->xpdo->context->get('key'));
 
@@ -138,8 +137,8 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 		$thumbnailQuality = $this->getOption('thumbnailQuality', $properties, 90);
 		$thumbWidth = $this->xpdo->context->getOption('filemanager_thumb_width', 100);
 		$thumbHeight = $this->xpdo->context->getOption('filemanager_thumb_height', 80);
-		$imageWidth = $this->ctx->getOption('filemanager_image_width', 800);
-		$imageHeight = $this->ctx->getOption('filemanager_image_height', 600);
+		$imageWidth = $this->xpdo->context->getOption('filemanager_image_width', 800);
+		$imageHeight = $this->xpdo->context->getOption('filemanager_image_height', 600);
 
 		$thumb_default = $this->xpdo->context->getOption('manager_url', MODX_MANAGER_URL) . 'templates/default/images/restyle/nopreview.jpg';
 		$thumbUrl = $this->xpdo->context->getOption('connectors_url', MODX_CONNECTORS_URL) . 'system/phpthumb.php?';
@@ -148,41 +147,41 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 		$imagesExts = explode(',', $imagesExts);
 
 		if ($path != '/') {
-			$thumb = $this->ctx->getOption('manager_url', MODX_MANAGER_URL).'templates/default/images/restyle/nopreview.jpg';
+			$thumb = $this->xpdo->context->getOption('manager_url', MODX_MANAGER_URL) . 'templates/default/images/restyle/nopreview.jpg';
 
 			$id = (int)$path;
 
 			/* get items */
-			$c = $this->xpdo->newQuery('FileItem');
+			$c = $this->xpdo->newQuery(FileItem::class);
 			$c->sortby('name', 'ASC');
-			$c->where(array('docid' => $id));
+			$c->where(['docid' => $id]);
 
-			$items = $this->xpdo->getCollection('FileItem', $c);
+			$items = $this->xpdo->getCollection(FileItem::class, $c);
 
 			/** @var FileItem $item */
 			foreach ($items as $item) {
 				$ext = strtolower(pathinfo($item->get('internal_name'), PATHINFO_EXTENSION));
 
-				$listItem = array(
+				$listItem = [
 					'id' => $item->get('id'),
 					'name' => $item->get('name'),
 					'ext' => $ext,
 					'type' => 'file',
 					'size' => $item->getSize(),
-					'thumb' => $thumb,
+					'thumb' => '',
 					'leaf' => true,
 					'perms' => '',
 					'thumb_width' => $thumbWidth,
 					'thumb_height' => $thumbHeight,
 					'disabled' => false
-				);
+				];
 
 				if (in_array($ext, $imagesExts)) {
 					/* get thumbnail */
 					$preview = 1;
 
 					/* generate thumb/image URLs */
-					$thumbQuery = http_build_query(array(
+					$thumbQuery = http_build_query([
 						'src' => $item->getPath(),
 						'w' => $thumbWidth,
 						'h' => $thumbHeight,
@@ -192,9 +191,9 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 						'HTTP_MODAUTH' => $modAuth,
 						'wctx' => $this->xpdo->context->get('key'),
 						'source' => $this->parentSourceID
-					));
+					]);
 
-					$imageQuery = http_build_query(array(
+					$imageQuery = http_build_query([
 						'src' => $item->getPath(),
 						'w' => $imageWidth,
 						'h' => $imageHeight,
@@ -204,7 +203,7 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 						'HTTP_MODAUTH' => $modAuth,
 						'wctx' => $this->xpdo->context->get('key'),
 						'source' => $this->parentSourceID
-					));
+					]);
 
 					$thumb = $thumbUrl . urldecode($thumbQuery);
 
@@ -232,35 +231,35 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 	 * @return array
 	 */
 	public function getDefaultProperties() {
-		return array(
-			'imageExtensions' => array(
+		return [
+			'imageExtensions' => [
 				'name' => 'imageExtensions',
 				'desc' => 'prop_file.imageExtensions_desc',
 				'type' => 'textfield',
 				'value' => 'jpg,jpeg,png,gif',
 				'lexicon' => 'core:source',
-			),
-			'thumbnailType' => array(
+			],
+			'thumbnailType' => [
 				'name' => 'thumbnailType',
 				'desc' => 'prop_file.thumbnailType_desc',
 				'type' => 'list',
-				'options' => array(
-					array('name' => 'PNG','value' => 'png'),
-					array('name' => 'JPG','value' => 'jpg'),
-					array('name' => 'GIF','value' => 'gif'),
-				),
+				'options' => [
+					['name' => 'PNG','value' => 'png'],
+					['name' => 'JPG','value' => 'jpg'],
+					['name' => 'GIF','value' => 'gif'],
+				],
 				'value' => 'png',
 				'lexicon' => 'core:source',
-			),
-			'thumbnailQuality' => array(
+			],
+			'thumbnailQuality' => [
 				'name' => 'thumbnailQuality',
 				'desc' => 'prop_file.thumbnailQuality_desc',
 				'type' => 'textfield',
 				'options' => '',
 				'value' => 90,
 				'lexicon' => 'core:source',
-			)
-		);
+			]
+		];
 	}
 
 
@@ -294,3 +293,4 @@ class FileAttachMediaSource extends modMediaSource implements modMediaSourceInte
 		return $this->xpdo->lexicon('fileattach.source_desc');
 	}
 }
+
