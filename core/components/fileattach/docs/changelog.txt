@@ -1,5 +1,20 @@
 Changelog for FileAttach.
 
+2.0.0-pl
+==============
+- Ported to MODX 3 (requires MODX 3.x)
+- PSR-4 code structure with Composer autoloading (namespace FileAttach\)
+- Model regenerated for xPDO 3, InnoDB engine, sqlsrv support removed
+- Media source moved to Flysystem API (MODX 3 sources)
+- Fixed compatibility with PHP 8.x
+- Fixed undefined public url in FileLink snippet
+- Fixed internal name mismatch when upload_translit is enabled
+- Fixed infinite loop on file name collisions with upload_translit enabled
+- Fixed default chunk name in FileAttach snippet (FileAttachTpl)
+- Added replaceable upload mode (fileattach.replaceable)
+- Hash processor now calculates SHA1 of file contents
+- Loading through namespace bootstrap instead of extension package
+
 1.0.11pl
 ==============
 - Fix/update media source
