@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2018 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -20,10 +20,13 @@
  * Suite 330, Boston, MA 02111-1307 USA
  *
  * @package FileAttach
-*/
+ */
+
+use FileAttach\FileAttach;
+use MODX\Revolution\modExtraManagerController;
 
 /**
- * Class FileattachManageManagerController
+ * Class FileattachListManagerController
  */
 class FileattachListManagerController extends modExtraManagerController {
 	/** @var FileAttach $FileAttach */
@@ -35,13 +38,15 @@ class FileattachListManagerController extends modExtraManagerController {
 	 */
 	public function initialize() {
 		$corePath = $this->modx->getOption('fileattach.core_path', null, $this->modx->getOption('core_path') . 'components/fileattach/');
-		require_once $corePath . 'model/fileattach/fileattach.class.php';
 
-		$this->FileAttach = new FileAttach($this->modx);
-		$this->addJavascript($this->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
-		$this->addHtml('<script type="text/javascript">
-			FileAttach.config = ' . $this->modx->toJSON($this->FileAttach->config) . ';
-		</script>');
+		$this->FileAttach = $this->modx->getService('fileattach', FileAttach::class, $corePath);
+
+		if ($this->FileAttach) {
+			$this->addJavascript($this->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
+			$this->addHtml('<script type="text/javascript">
+				FileAttach.config = ' . $this->modx->toJSON($this->FileAttach->config) . ';
+			</script>');
+		}
 
 		parent::initialize();
 	}
@@ -54,9 +59,9 @@ class FileattachListManagerController extends modExtraManagerController {
 		$this->addJavascript($this->FileAttach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
 		$this->addJavascript($this->FileAttach->config['jsUrl'] . 'mgr/widgets/home.panel.js');
 		$this->addHtml('<script type="text/javascript">
-		Ext.onReady(function() {
-			MODx.load({ xtype: "fileattach-page-home"});
-		});
+			Ext.onReady(function() {
+				MODx.load({ xtype: "fileattach-page-home"});
+			});
 		</script>');
 	}
 
@@ -73,7 +78,7 @@ class FileattachListManagerController extends modExtraManagerController {
 	 * @return array
 	 */
 	public function getLanguageTopics() {
-		return array('fileattach:default');
+		return ['fileattach:default'];
 	}
 
 
