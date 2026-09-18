@@ -10,10 +10,9 @@ $sources = array(
 	'root' => $root,
 	'build' => $root . '_build/',
 	'source_core' => $root . 'core/components/' . PKG_NAME_LOWER,
-	'model' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/',
+	'src' => $root . 'core/components/' . PKG_NAME_LOWER . '/src/',
 	'schema' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/schema/',
 	'xml' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/schema/' . PKG_NAME_LOWER . '.mysql.schema.xml',
-	'xml2' => $root . 'core/components/' . PKG_NAME_LOWER . '/model/schema/' . PKG_NAME_LOWER . '.sqlsrv.schema.xml',
 );
 unset($root);
 
@@ -25,23 +24,30 @@ $modx->initialize('mgr');
 $modx->getService('error', 'error.modError');
 $modx->setLogLevel(modX::LOG_LEVEL_INFO);
 $modx->setLogTarget('ECHO');
+
+// Make existing model classes loadable, so the generator can
+// reconstruct the platform (mysql) classes instead of writing junk
+$autoload = $sources['source_core'] . '/vendor/autoload.php';
+if (file_exists($autoload)) {
+	require_once $autoload;
+}
+
 $modx->loadClass('transport.modPackageBuilder', '', false, true);
 if (!XPDO_CLI_MODE) {
 	echo '<pre>';
 }
 
-/** @var xPDOManager $manager */
+/** @var xPDO\Om\xPDOManager $manager */
 $manager = $modx->getManager();
-/** @var xPDOGenerator $generator */
+/** @var xPDO\Om\xPDOGenerator $generator */
 $generator = $manager->getGenerator();
 
-// Remove old model
-rrmdir($sources['model'] . PKG_NAME_LOWER . '/mysql');
-rrmdir($sources['model'] . PKG_NAME_LOWER . '/sqlsrv');
-
-// Generate a new one
-$generator->parseSchema($sources['xml'], $sources['model']);
-$generator->parseSchema($sources['xml2'], $sources['model']);
+// Generate PSR-4 model into src/ (existing domain classes are kept,
+// maps and metadata are regenerated)
+$generator->parseSchema($sources['xml'], $sources['src'], array(
+	'namespacePrefix' => 'FileAttach',
+	'update' => 1
+));
 
 $modx->log(modX::LOG_LEVEL_INFO, 'Model generated.');
 if (!XPDO_CLI_MODE) {

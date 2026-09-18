@@ -9,10 +9,8 @@ set_time_limit(0);
 header('Content-Type:text/html;charset=utf-8');
 
 require_once 'build.config.php';
-// Refresh model
-if (file_exists('build.model.php')) {
-	require_once 'build.model.php';
-}
+// Model is generated manually via build.model.php (do not regenerate here:
+// reconstruction of existing platform classes requires the autoloader)
 
 /* define sources */
 $root = dirname(dirname(__FILE__)) . '/';
@@ -39,12 +37,14 @@ $modx->initialize('mgr');
 $modx->setLogLevel(modX::LOG_LEVEL_INFO);
 $modx->setLogTarget('ECHO');
 $modx->getService('error', 'error.modError');
-$modx->loadClass('transport.modPackageBuilder', '', false, true);
+// MODX 3: loadClass returns the FQCN, the legacy short alias is not defined
+$builderClass = $modx->loadClass('transport.modPackageBuilder', '', false, true);
 if (!XPDO_CLI_MODE) {
 	echo '<pre>';
 }
 
-$builder = new modPackageBuilder($modx);
+/** @var \MODX\Revolution\Transport\modPackageBuilder $builder */
+$builder = new $builderClass($modx);
 $builder->createPackage(PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE);
 $builder->registerNamespace(PKG_NAME_LOWER, false, true, PKG_NAMESPACE_PATH, PKG_ASSETS_PATH);
 
@@ -317,7 +317,9 @@ if (defined('PKG_AUTO_INSTALL') && PKG_AUTO_INSTALL) {
 	}
 
 	if ($package->install()) {
-		$modx->runProcessor('system/clearcache');
+		// MODX 3: 'system/clearcache' is not resolvable via runProcessor in CLI
+		$modx->getCacheManager();
+		$modx->cacheManager->refresh();
 	}
 }
 if (!empty($_GET['download'])) {

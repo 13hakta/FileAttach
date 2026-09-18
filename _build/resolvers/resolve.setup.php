@@ -2,15 +2,14 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
  *
  * FileAttach is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * Foundation version 3,
  *
  * FileAttach is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
@@ -27,28 +26,19 @@ $success = false;
 
 if ($object->xpdo) {
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+		// The fileattach namespace bootstrap.php now takes care of
+		// autoloading and package registration on every request
 		case xPDOTransport::ACTION_UPGRADE:
-			if (!isset($options['install_pack'])) {
-				$modx =& $object->xpdo;
-				if ($modx instanceof modX)
-					$modx->removeExtensionPackage('fileattach');
-			}
-
 		case xPDOTransport::ACTION_INSTALL:
-			if (isset($options['install_pack'])) {
-				/** @var modX $modx */
-				$modx =& $object->xpdo;
-				$modelPath = $modx->getOption('fileattach.core_path');
-				if (empty($modelPath))
-					$modelPath = '[[++core_path]]components/fileattach/';
+			$modx =& $object->xpdo;
 
-				$modelPath = rtrim($modelPath, '/') . '/model/';
-				if ($modx instanceof modX)
-					$modx->addExtensionPackage('fileattach', $modelPath);
-			}
+			// Remove legacy extension package record from 1.x versions
+			if ($modx instanceof modX)
+				$modx->removeExtensionPackage('fileattach');
 
 			$success = true;
 			break;
+
 		case xPDOTransport::ACTION_UNINSTALL:
 			$modx =& $object->xpdo;
 			if ($modx instanceof modX)

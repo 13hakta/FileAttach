@@ -4,15 +4,24 @@ if ($object->xpdo) {
 	/** @var modX $modx */
 	$modx =& $object->xpdo;
 
-	$modelPath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/';
-	$modx->addPackage('fileattach', $modelPath);
+	$corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
+
+	// The namespace bootstrap is not loaded yet during install,
+	// so register the composer autoloader before working with the model
+	$autoload = $corePath . 'vendor/autoload.php';
+	if (file_exists($autoload)) {
+		require_once $autoload;
+	}
+
+	$modx->addPackage('FileAttach\\Model', $corePath . 'src/', null, 'FileAttach');
+
 	$manager = $modx->getManager();
 
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		case xPDOTransport::ACTION_INSTALL:
 			// Create tables
 			$objects = array(
-				'FileItem', 'FileAttachMediaSource'
+				'FileAttach\Model\FileItem'
 			);
 			foreach ($objects as $tmp) {
 				$manager->createObjectContainer($tmp);
@@ -35,35 +44,35 @@ if ($object->xpdo) {
 
 			$package = $modx->getObject('modTransportPackage', $c);
 			if ($package) {
-					$oldLogLevel = $modx->getLogLevel();
-					$modx->setLogLevel(0);
+				$oldLogLevel = $modx->getLogLevel();
+				$modx->setLogLevel(0);
 
-					$version =
+				$version =
 					$package->get('version_major') * 1000 +
 					$package->get('version_minor') * 100 +
 					$package->get('version_patch');
 
-					// Update tables
-					if ($version < 1002)
-						$manager->addField('FileItem', 'rank', array('after' => 'uid'));
+				// Update tables
+				if ($version < 1002)
+					$manager->addField('FileAttach\Model\FileItem', 'rank', array('after' => 'uid'));
 
-					if ($version < 1007) {
-						$manager->addField('FileItem', 'fid', array('after' => 'id'));
-						$manager->addIndex('FileItem', 'fid');
-					}
+				if ($version < 1007) {
+					$manager->addField('FileAttach\Model\FileItem', 'fid', array('after' => 'id'));
+					$manager->addIndex('FileAttach\Model\FileItem', 'fid');
+				}
 
-					if ($version < 1011) {
-						$manager->addField('FileItem', 'tag', array('after' => 'hash'));
-						$manager->alterField('FileItem', 'hash');
-					}
+				if ($version < 1011) {
+					$manager->addField('FileAttach\Model\FileItem', 'tag', array('after' => 'hash'));
+					$manager->alterField('FileAttach\Model\FileItem', 'hash');
+				}
 
-					$modx->setLogLevel($oldLogLevel);
+				$modx->setLogLevel($oldLogLevel);
 			}
 
 			// Find old records with empty file ID
-			$needID = $modx->getCollection('FileItem', array('fid' => ''));
+			$needID = $modx->getCollection('FileAttach\Model\FileItem', array('fid' => ''));
 			foreach ($needID as $item) {
-				$item->set('fid', $item->generateName());
+				$item->set('fid', \FileAttach\Model\FileItem::generateName());
 				$item->save();
 			}
 
