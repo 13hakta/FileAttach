@@ -1,0 +1,26 @@
+{
+    "name": "13hakta/fileattach",
+    "description": "Tool to attach files to resources with MODX Revolution's Manager",
+    "type": "modx-extra",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Vitaly Checkryzhev",
+            "email": "13hakta@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "extra": {
+        "modx": {
+            "name": "FileAttach",
+            "version": "2.0.0-pl"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "FileAttach\\": "src/"
+        }
+    }
+}
