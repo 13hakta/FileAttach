@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2020 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -20,16 +20,26 @@
  * Suite 330, Boston, MA 02111-1307 USA
  *
  * @package FileAttach
-*/
+ */
 
+use FileAttach\Model\FileItem;
+use MODX\Revolution\Sources\modMediaSource;
+
+/** @var modX $modx */
 /** @var array $scriptProperties */
-/** @var FileAttach $FileAttach */
-if (!$FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/', $scriptProperties)) {
+
+$corePath = $modx->getOption('fileattach.core_path', $scriptProperties, $modx->getOption('core_path') . 'components/fileattach/');
+
+if (!class_exists(\FileAttach\FileAttach::class)) {
+	require_once $corePath . 'bootstrap.php';
+}
+
+if (!$FileAttach = $modx->getService('fileattach', \FileAttach\FileAttach::class, $corePath, $scriptProperties)) {
 	return 'Could not load FileAttach class!';
 }
 
 // Get script options
-$tpl = $modx->getOption('tpl', $scriptProperties, 'FileItemTpl');
+$tpl = $modx->getOption('tpl', $scriptProperties, 'FileAttachTpl');
 $sortby = $modx->getOption('sortBy', $scriptProperties, 'name');
 $sortdir = $modx->getOption('sortDir', $scriptProperties, 'ASC');
 $inline = $modx->getOption('inline', $scriptProperties, false);
@@ -65,17 +75,26 @@ if ($groups != '') {
 	if (!$modx->user->isMember($accessGroups)) return;
 }
 
+$ms = null;
+$files_path = '';
+$public_url = '';
+
 if ($makeUrl) {
 	if (!$privateUrl || $showSize) {
 		// Get base URLs
 		$mediaSource = $modx->getOption('fileattach.mediasource', null, 1);
 
-		$ms = $modx->getObject('sources.modMediaSource', array('id' => $mediaSource));
+		/** @var modMediaSource|null $ms */
+		$ms = $modx->getObject(modMediaSource::class, ['id' => $mediaSource]);
+		if (!$ms) {
+			$modx->log(xPDO::LOG_LEVEL_ERROR, '[FileAttach] Could not load media source: ' . $mediaSource);
+			return '';
+		}
+
 		$ms->initialize();
 
 		$files_path = $modx->getOption('fileattach.files_path');
 		$public_url = $ms->getBaseUrl() . $files_path;
-		$docs_path  = $ms->getBasePath() . $files_path;
 	}
 
 	$private_url = $modx->getOption('fileattach.assets_url', null, $modx->getOption('assets_url')) . 'components/fileattach/';
@@ -88,30 +107,30 @@ if ($makeUrl) {
 }
 
 // Build query
-$c = $modx->newQuery('FileItem');
+$c = $modx->newQuery(FileItem::class);
 
 if ($showHASH)
-	$c->select($modx->getSelectColumns('FileItem', 'FileItem'));
+	$c->select($modx->getSelectColumns(FileItem::class, 'FileItem'));
 else
-	$c->select($modx->getSelectColumns('FileItem', 'FileItem', '', array('hash'), true));
+	$c->select($modx->getSelectColumns(FileItem::class, 'FileItem', '', ['hash'], true));
 
-$c->where(array('docid' => ($resource > 0)? $resource : $modx->resource->get('id')));
+$c->where(['docid' => ($resource > 0)? $resource : $modx->resource->get('id')]);
 
 if ($tag != '')
-	$c->where(array('tag' => $tag));
+	$c->where(['tag' => $tag]);
 
 if (!empty($limit)) {
-	$total = $modx->getCount('FileItem', $c);
+	$total = $modx->getCount(FileItem::class, $c);
 	$modx->setPlaceholder($totalVar, $total);
 }
 
 if (!empty($limit)) $c->limit($limit, $offset);
 $c->sortby($sortby, $sortdir);
 
-$items = $modx->getIterator('FileItem', $c);
+$items = $modx->getIterator(FileItem::class, $c);
 
 // Iterate through items
-$list = array();
+$list = [];
 /** @var FileItem $item */
 foreach ($items as $item) {
 	$item->source = $ms;
@@ -123,7 +142,7 @@ foreach ($items as $item) {
 		if ($itemArr['private'] || $privateUrl)
 			$itemArr['url'] = $private_url . $itemArr['fid'];
 		else
-			$itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['name'];
+			$itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['internal_name'];
 	}
 
 	if ($showSize)

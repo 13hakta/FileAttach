@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2015-2016 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2015-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -20,7 +20,9 @@
  * Suite 330, Boston, MA 02111-1307 USA
  *
  * @package FileAttach
-*/
+ */
+
+use FileAttach\Model\FileItem;
 
 switch ($modx->event->name) {
 	// Add a custom tab to the MODX create/edit resource pages
@@ -41,32 +43,32 @@ switch ($modx->event->name) {
 		$modx->controller->addLexiconTopic('fileattach:default');
 
 		$corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
-		require_once $corePath . 'model/fileattach/fileattach.class.php';
+		$fileattach = $modx->getService('fileattach', \FileAttach\FileAttach::class, $corePath);
 
-		$modx->FileAttach = new FileAttach($modx);
-		$modx->controller->addJavascript($modx->FileAttach->config['jsUrl'] . 'mgr/fileattach.js');
-		$modx->controller->addJavascript($modx->FileAttach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
-		$modx->controller->addLastJavascript($modx->FileAttach->config['jsUrl'] . 'mgr/filestab.js');
-		$modx->controller->addHtml('<script type="text/javascript">FileAttach.config = ' . $modx->toJSON($modx->FileAttach->config) . ';</script>');
+		if (!$fileattach) return;
+
+		$modx->controller->addJavascript($fileattach->config['jsUrl'] . 'mgr/fileattach.js');
+		$modx->controller->addJavascript($fileattach->config['jsUrl'] . 'mgr/widgets/items.grid.js');
+		$modx->controller->addLastJavascript($fileattach->config['jsUrl'] . 'mgr/filestab.js');
+		$modx->controller->addHtml('<script type="text/javascript">FileAttach.config = ' . $modx->toJSON($fileattach->config) . ';</script>');
 
 		break;
 
 	// Remove attached files to resources
 	case 'OnEmptyTrash':
 		// Load service
-		if (!$FileAttach = $modx->getService('fileattach', 'FileAttach',
-			$modx->getOption('fileattach.core_path',
-			null,
-			$modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/')) {
+		$corePath = $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/');
+
+		if (!$FileAttach = $modx->getService('fileattach', \FileAttach\FileAttach::class, $corePath)) {
 			$modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not load FileAttach class OnEmptyTrash!');
 			return;
 		}
 
-		foreach ($ids as &$id) {
-			$c = $modx->newQuery('FileItem');
-			$c->where(array('docid' => $id));
+		foreach ($ids as $id) {
+			$c = $modx->newQuery(FileItem::class);
+			$c->where(['docid' => $id]);
 
-			$iter = $modx->getIterator('FileItem', $c);
+			$iter = $modx->getIterator(FileItem::class, $c);
 			foreach ($iter as $item) $item->remove();
 		}
 

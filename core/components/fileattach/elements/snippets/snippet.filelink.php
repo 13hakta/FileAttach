@@ -2,7 +2,7 @@
 /**
  * FileAttach
  *
- * Copyright 2020 by Vitaly Checkryzhev <13hakta@gmail.com>
+ * Copyright 2020-2026 by Vitaly Checkryzhev <13hakta@gmail.com>
  *
  * This file is part of FileAttach, tool to attach files to resources with
  * MODX Revolution's Manager.
@@ -20,11 +20,21 @@
  * Suite 330, Boston, MA 02111-1307 USA
  *
  * @package FileAttach
-*/
+ */
 
+use FileAttach\Model\FileItem;
+use MODX\Revolution\Sources\modMediaSource;
+
+/** @var modX $modx */
 /** @var array $scriptProperties */
-/** @var FileAttach $FileAttach */
-if (!$FileAttach = $modx->getService('fileattach', 'FileAttach', $modx->getOption('fileattach.core_path', null, $modx->getOption('core_path') . 'components/fileattach/') . 'model/fileattach/', $scriptProperties)) {
+
+$corePath = $modx->getOption('fileattach.core_path', $scriptProperties, $modx->getOption('core_path') . 'components/fileattach/');
+
+if (!class_exists(\FileAttach\FileAttach::class)) {
+	require_once $corePath . 'bootstrap.php';
+}
+
+if (!$FileAttach = $modx->getService('fileattach', \FileAttach\FileAttach::class, $corePath, $scriptProperties)) {
 	return 'Could not load FileAttach class!';
 }
 
@@ -47,8 +57,10 @@ if ($groups != '') {
 	if (!$modx->user->isMember($accessGroups)) return;
 }
 
-// Build query
-$item = $modx->getObject('FileItem', array('id' => $fid, 'docid' => $modx->resource->get('id')));
+// Get item
+$item = $modx->getObject(FileItem::class, ['id' => $fid, 'docid' => $modx->resource->get('id')]);
+
+if (!$item) return '';
 
 $itemArr = $item->toArray();
 
@@ -58,7 +70,21 @@ if ($itemArr['private']) {
 		$modx->context->key . '&inline=1&fid=';
 
 	$itemArr['url'] = $private_url . $itemArr['fid'];
-} else
-	$itemArr['url'] = $public_url . $itemArr['path'] . $itemArr['name'];
+} else {
+	// Public file: build url from the media source
+	$mediaSource = $modx->getOption('fileattach.mediasource', null, 1);
+
+	/** @var modMediaSource|null $ms */
+	$ms = $modx->getObject(modMediaSource::class, ['id' => $mediaSource]);
+	if (!$ms) {
+		$modx->log(xPDO::LOG_LEVEL_ERROR, '[FileAttach] Could not load media source: ' . $mediaSource);
+		return '';
+	}
+
+	$ms->initialize();
+
+	$files_path = $modx->getOption('fileattach.files_path');
+	$itemArr['url'] = $ms->getBaseUrl() . $files_path . $itemArr['path'] . $itemArr['internal_name'];
+}
 
 return $itemArr['url'];
