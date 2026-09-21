@@ -80,6 +80,15 @@ $tmp = array(
 		'lexicon' => 'fileattach:setting',
 		'value' => false
 	),
+	'replaceable' => array(
+		'key' => 'fileattach.replaceable',
+		'name' => 'setting_fileattach.replaceable',
+		'description' => 'setting_fileattach.replaceable_desc',
+		'xtype' => 'combo-boolean',
+		'lexicon' => 'fileattach:setting',
+		'area' => 'file',
+		'value' => false
+	),
 );
 
 foreach ($tmp as $k => $v) {
