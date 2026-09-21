@@ -26,3 +26,6 @@ $_lang['setting_fileattach.download_desc'] = 'Count downloads increases DB load'
 
 $_lang['setting_fileattach.translit'] = 'Transliterate file names';
 $_lang['setting_fileattach.translit_desc'] = 'Transliterate names of uploaded files according to "Friendly URL" options';
+
+$_lang['setting_fileattach.replaceable'] = 'Replace files with the same name';
+$_lang['setting_fileattach.replaceable_desc'] = 'When uploading a file with the same name to a resource, replace the previously attached file instead of adding a new record';

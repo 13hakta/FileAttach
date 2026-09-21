@@ -26,3 +26,6 @@ $_lang['setting_fileattach.download_desc'] = 'Счет скачиваний ув
 
 $_lang['setting_fileattach.translit'] = 'Транслитерировать файлы';
 $_lang['setting_fileattach.translit_desc'] = 'Транслитерировать имена загружаемых файлов согласно настройкам "Дружественные URL"';
+
+$_lang['setting_fileattach.replaceable'] = 'Заменять файлы с одинаковым именем';
+$_lang['setting_fileattach.replaceable_desc'] = 'При загрузке файла с тем же именем в ресурс заменять ранее прикрепленный файл вместо создания новой записи';
